@@ -1,0 +1,20 @@
+{
+  "name": "Pregnancy & Birth Guide",
+  "short_name": "Birth Guide",
+  "description": "Evidence-based pregnancy, labor, delivery & postpartum guide. Works offline.",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#1d4e4e",
+  "theme_color": "#1d4e4e",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%231d4e4e'/%3E%3Ccircle cx='256' cy='230' r='90' fill='none' stroke='%23ffffff' stroke-width='18'/%3E%3Cellipse cx='256' cy='310' rx='55' ry='72' fill='%23ffffff' fill-opacity='0.25'/%3E%3Ccircle cx='256' cy='236' r='32' fill='%23ffffff' fill-opacity='0.3'/%3E%3Cpath d='M200 370 Q256 420 312 370' stroke='%23ffffff' stroke-width='16' fill='none' stroke-linecap='round'/%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["health", "medical", "education"],
+  "lang": "en-US"
+}

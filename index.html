@@ -1,0 +1,2460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1d4e4e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Birth Guide">
+<meta name="description" content="Evidence-based pregnancy, labor, delivery & postpartum guide. Works offline.">
+<title>Pregnancy &amp; Birth Guide</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+
+<style>
+/* ─── RESET & ROOT ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --teal:       #1d4e4e;
+  --teal-mid:   #2a7070;
+  --teal-light: #e6f2f2;
+  --teal-faint: #f0f8f8;
+  --rose:       #b85c55;
+  --rose-light: #fdf1f0;
+  --gold:       #b87c28;
+  --gold-light: #fdf5e6;
+  --navy:       #2a3d6e;
+  --navy-light: #eef1f9;
+  --plum:       #5e3073;
+  --plum-light: #f4eef9;
+  --ink:        #1a2424;
+  --ink-mid:    #3d4e4e;
+  --ink-soft:   #6b7c7c;
+  --rule:       #dce8e8;
+  --bg:         #f7fafa;
+  --white:      #ffffff;
+  --card-shadow: 0 1px 3px rgba(29,78,78,0.08), 0 4px 12px rgba(29,78,78,0.06);
+  --card-shadow-hover: 0 4px 16px rgba(29,78,78,0.13), 0 1px 3px rgba(29,78,78,0.1);
+  --radius:     14px;
+  --radius-sm:  8px;
+  --nav-h:      64px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --font-serif: 'Lora', Georgia, serif;
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+}
+
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+/* ─── LAYOUT SHELL ─── */
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+#header {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: var(--teal);
+  padding: env(safe-area-inset-top, 0px) 0 0;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+}
+
+.header-logo {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.header-titles {
+  flex: 1;
+  min-width: 0;
+}
+
+.header-title {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 700;
+  color: white;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.2;
+}
+
+#install-btn {
+  display: none;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  border-radius: 20px;
+  padding: 5px 11px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background .2s;
+}
+#install-btn:active { background: rgba(255,255,255,0.28); }
+#install-btn.visible { display: flex; }
+
+/* Search bar */
+#search-bar {
+  padding: 0 16px 12px;
+  position: relative;
+}
+
+#search-input {
+  width: 100%;
+  padding: 9px 12px 9px 36px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 22px;
+  color: white;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  outline: none;
+  transition: background .2s, border .2s;
+}
+#search-input::placeholder { color: rgba(255,255,255,0.55); }
+#search-input:focus {
+  background: rgba(255,255,255,0.22);
+  border-color: rgba(255,255,255,0.45);
+}
+
+.search-icon {
+  position: absolute;
+  left: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+#search-clear {
+  display: none;
+  position: absolute;
+  right: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.25);
+  border: none;
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+  align-items: center;
+  justify-content: center;
+}
+#search-clear.visible { display: flex; }
+
+/* ─── CONTENT AREA ─── */
+#content {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+.page { display: none; padding-bottom: calc(var(--nav-h) + var(--safe-bottom) + 16px); }
+.page.active { display: block; }
+
+/* ─── BOTTOM NAV ─── */
+#nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  background: var(--white);
+  border-top: 1px solid var(--rule);
+  display: flex;
+  padding-bottom: var(--safe-bottom);
+  box-shadow: 0 -2px 12px rgba(29,78,78,0.08);
+}
+
+.nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 8px 2px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--ink-soft);
+  transition: color .15s;
+  -webkit-tap-highlight-color: transparent;
+  min-height: var(--nav-h);
+  touch-action: manipulation;
+}
+.nav-btn.active { color: var(--teal); }
+.nav-btn:active { opacity: 0.7; }
+
+.nav-icon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.nav-label {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* ─── CARDS & SECTIONS ─── */
+.section-hero {
+  background: linear-gradient(135deg, var(--teal) 0%, var(--teal-mid) 100%);
+  padding: 28px 20px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.section-hero::before {
+  content: '';
+  position: absolute;
+  right: -30px;
+  top: -30px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+}
+
+.section-hero.rose-hero { background: linear-gradient(135deg, #7a3a36 0%, var(--rose) 100%); }
+.section-hero.gold-hero { background: linear-gradient(135deg, #7a5010 0%, var(--gold) 100%); }
+.section-hero.navy-hero { background: linear-gradient(135deg, #1a2548 0%, var(--navy) 100%); }
+.section-hero.plum-hero { background: linear-gradient(135deg, #3a1a48 0%, var(--plum) 100%); }
+
+.hero-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 6px;
+}
+
+.hero-title {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 600;
+  color: white;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.hero-desc {
+  font-size: 13px;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.55;
+}
+
+/* Card list */
+.cards { padding: 16px 16px 0; display: flex; flex-direction: column; gap: 10px; }
+
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  transition: box-shadow .2s;
+}
+
+.card:active { box-shadow: var(--card-shadow-hover); }
+
+/* Accordion card */
+.acc-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.acc-icon-wrap {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: var(--teal-light);
+}
+
+.acc-icon-wrap.rose { background: var(--rose-light); }
+.acc-icon-wrap.gold { background: var(--gold-light); }
+.acc-icon-wrap.navy { background: var(--navy-light); }
+.acc-icon-wrap.plum { background: var(--plum-light); }
+
+.acc-icon-wrap svg { width: 20px; height: 20px; }
+
+.acc-titles { flex: 1; min-width: 0; }
+
+.acc-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.25;
+}
+
+.acc-sub {
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  margin-top: 1px;
+}
+
+.acc-chevron {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--ink-soft);
+  transition: transform .25s cubic-bezier(.4,0,.2,1);
+}
+
+.card.open .acc-chevron { transform: rotate(180deg); }
+
+.acc-body {
+  display: none;
+  padding: 0 16px 16px;
+  border-top: 1px solid var(--rule);
+}
+
+.card.open .acc-body { display: block; }
+
+/* Body content styles */
+.acc-body p {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+
+.acc-body p:last-child { margin-bottom: 0; }
+
+.acc-body .lead {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--teal);
+  padding-top: 10px;
+  margin-bottom: 10px;
+}
+
+.acc-body .lead.rose { color: var(--rose); }
+.acc-body .lead.gold { color: var(--gold); }
+.acc-body .lead.navy { color: var(--navy); }
+.acc-body .lead.plum { color: var(--plum); }
+
+.acc-body h4 {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--ink-mid);
+  margin: 14px 0 6px;
+}
+
+.acc-body ul, .acc-body ol {
+  padding-left: 20px;
+  margin-bottom: 10px;
+}
+
+.acc-body li {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.acc-body li strong { font-weight: 600; }
+
+/* Callout boxes */
+.callout {
+  background: var(--teal-faint);
+  border-left: 3px solid var(--teal);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 10px 12px;
+  margin: 10px 0;
+}
+.callout.rose { background: var(--rose-light); border-color: var(--rose); }
+.callout.gold { background: var(--gold-light); border-color: var(--gold); }
+.callout.navy { background: var(--navy-light); border-color: var(--navy); }
+.callout.plum { background: var(--plum-light); border-color: var(--plum); }
+.callout.alert { background: #fff3f3; border-color: #c44; }
+
+.callout-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--teal);
+  margin-bottom: 5px;
+}
+.callout.rose .callout-title { color: var(--rose); }
+.callout.gold .callout-title { color: var(--gold); }
+.callout.navy .callout-title { color: var(--navy); }
+.callout.plum .callout-title { color: var(--plum); }
+.callout.alert .callout-title { color: #c44; }
+
+.callout p { font-size: 13.5px; margin-bottom: 0; }
+
+/* Table */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 13px;
+}
+.data-table th {
+  background: var(--teal);
+  color: white;
+  padding: 7px 10px;
+  font-weight: 600;
+  font-size: 12px;
+  text-align: left;
+}
+.data-table th.rose { background: var(--rose); }
+.data-table th.gold { background: var(--gold); }
+.data-table th.navy { background: var(--navy); }
+.data-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+  line-height: 1.45;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:nth-child(even) td { background: var(--teal-faint); }
+
+/* ─── HOME PAGE ─── */
+.home-hero {
+  background: linear-gradient(160deg, var(--teal) 0%, #1a6060 60%, #2a7d5a 100%);
+  padding: 32px 20px 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.home-hero::after {
+  content: '';
+  position: absolute;
+  right: -20px;
+  bottom: -20px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+}
+
+.home-hero-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 8px;
+}
+
+.home-hero-title {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 600;
+  color: white;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+
+.home-hero-desc {
+  font-size: 13.5px;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.6;
+  max-width: 320px;
+}
+
+/* Quick nav grid */
+.quick-nav {
+  padding: 20px 16px 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.qnav-btn {
+  background: var(--white);
+  border: none;
+  border-radius: var(--radius);
+  padding: 14px 8px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: var(--card-shadow);
+  transition: box-shadow .2s, transform .15s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  text-decoration: none;
+}
+.qnav-btn:active { transform: scale(0.96); box-shadow: var(--card-shadow-hover); }
+
+.qnav-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qnav-icon svg { width: 22px; height: 22px; }
+
+.qnav-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink);
+  text-align: center;
+  line-height: 1.25;
+}
+
+/* Info strip */
+.info-strip {
+  margin: 16px 16px 0;
+  background: var(--teal);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.info-strip-text { flex: 1; }
+.info-strip-title { font-size: 14px; font-weight: 700; color: white; }
+.info-strip-sub { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 1px; }
+
+/* Quick-ref card */
+.qref-card {
+  margin: 16px 16px 0;
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+
+.qref-header {
+  background: #fff3f3;
+  border-bottom: 1px solid #ffd5d5;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.qref-header-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #c44;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.qref-body { padding: 12px 16px; }
+
+.qref-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.qref-col-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.qref-col-title.teal { color: var(--teal); }
+.qref-col-title.rose { color: var(--rose); }
+
+.qref-list { list-style: disc; padding-left: 16px; }
+.qref-list li { font-size: 12.5px; line-height: 1.5; color: var(--ink); margin-bottom: 2px; }
+
+/* ─── SEARCH RESULTS ─── */
+#search-results-page {
+  display: none;
+  padding: 0 0 calc(var(--nav-h) + var(--safe-bottom) + 16px);
+}
+#search-results-page.active { display: block; }
+
+.search-results-header {
+  padding: 16px 16px 8px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+
+.search-result-item {
+  margin: 0 16px 10px;
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  padding: 14px 16px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: box-shadow .15s;
+}
+.search-result-item:active { box-shadow: var(--card-shadow-hover); }
+
+.sri-section {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--teal);
+  margin-bottom: 4px;
+}
+.sri-section.rose { color: var(--rose); }
+.sri-section.gold { color: var(--gold); }
+.sri-section.navy { color: var(--navy); }
+.sri-section.plum { color: var(--plum); }
+
+.sri-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.sri-snippet {
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.sri-snippet em {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--teal);
+}
+
+.no-results {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--ink-soft);
+  font-size: 15px;
+}
+.no-results strong { display: block; font-size: 18px; color: var(--ink); margin-bottom: 6px; }
+
+/* ─── MY INFO PAGE ─── */
+.myinfo-hero {
+  background: linear-gradient(135deg, #1a2548 0%, var(--navy) 100%);
+  padding: 24px 20px 20px;
+}
+
+.myinfo-hero-title {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 4px;
+}
+.myinfo-hero-sub {
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+}
+
+.form-section {
+  margin: 16px 16px 0;
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+
+.form-section-title {
+  padding: 12px 16px 10px;
+  background: var(--teal-faint);
+  border-bottom: 1px solid var(--rule);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--teal);
+}
+
+.form-section-title.navy { background: var(--navy-light); color: var(--navy); border-color: var(--rule); }
+
+.contact-row {
+  border-bottom: 1px solid var(--rule);
+  padding: 14px 16px;
+}
+.contact-row:last-child { border-bottom: none; }
+
+.contact-row-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+
+.contact-fields { display: flex; flex-direction: column; gap: 7px; }
+
+.contact-field-wrap { display: flex; align-items: center; gap: 8px; }
+
+.contact-input {
+  flex: 1;
+  padding: 9px 12px;
+  border: 1.5px solid var(--rule);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--bg);
+  outline: none;
+  transition: border-color .2s;
+}
+.contact-input:focus { border-color: var(--teal); background: white; }
+.contact-input::placeholder { color: var(--ink-soft); opacity: 0.6; }
+
+.action-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: opacity .2s, transform .15s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.action-btn:active { transform: scale(0.92); }
+.action-btn:disabled { opacity: 0.3; cursor: default; }
+
+.call-btn { background: #e8f5e9; color: #2e7d32; }
+.text-btn { background: #e3f2fd; color: #1565c0; }
+
+.myinfo-save-bar {
+  padding: 16px;
+  position: sticky;
+  bottom: calc(var(--nav-h) + var(--safe-bottom));
+}
+
+#save-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--teal);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s, transform .15s;
+  -webkit-tap-highlight-color: transparent;
+}
+#save-btn:active { transform: scale(0.98); background: var(--teal-mid); }
+#save-btn.saved { background: #2e7d32; }
+
+/* ─── FAQ PAGE ─── */
+.faq-item {
+  margin-bottom: 10px;
+}
+
+.faq-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.faq-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.badge-myth { background: #fde8e6; color: #c0392b; }
+.badge-faq  { background: var(--teal-light); color: var(--teal); }
+
+.faq-q {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.35;
+}
+
+.faq-chevron {
+  width: 18px;
+  height: 18px;
+  color: var(--ink-soft);
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: transform .25s;
+}
+.card.open .faq-chevron { transform: rotate(180deg); }
+
+/* ─── OFFLINE BANNER ─── */
+#offline-banner {
+  display: none;
+  background: #e65100;
+  color: white;
+  text-align: center;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 600;
+}
+#offline-banner.visible { display: block; }
+
+/* ─── TOAST ─── */
+#toast {
+  position: fixed;
+  bottom: calc(var(--nav-h) + var(--safe-bottom) + 16px);
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--ink);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 22px;
+  font-size: 13.5px;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity .2s, transform .2s;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 9999;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ─── UTILITY ─── */
+.mt8 { margin-top: 8px; }
+.mt12 { margin-top: 12px; }
+.mt16 { margin-top: 16px; }
+strong { font-weight: 600; }
+.text-muted { color: var(--ink-soft); }
+
+/* Scrollbar (desktop) */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 4px; }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- Offline banner -->
+<div id="offline-banner">⚠ You're offline — all content still available</div>
+
+<!-- Header -->
+<div id="header">
+  <div class="header-inner">
+    <svg class="header-logo" viewBox="0 0 40 40" fill="none">
+      <circle cx="20" cy="20" r="19" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+      <circle cx="20" cy="18" r="9" stroke="white" stroke-width="1.8" fill="none"/>
+      <ellipse cx="20" cy="26" rx="6" ry="8" fill="rgba(255,255,255,0.2)" stroke="white" stroke-width="1.5"/>
+      <path d="M14 34 Q20 40 26 34" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    </svg>
+    <div class="header-titles">
+      <div class="header-title">Pregnancy &amp; Birth Guide</div>
+      <div class="header-sub" id="header-sub">Evidence-based · Works offline</div>
+    </div>
+    <button id="install-btn" onclick="installPWA()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 15V3m0 12l-4-4m4 4l4-4"/><path d="M2 17v3a2 2 0 002 2h16a2 2 0 002-2v-3"/></svg>
+      Add to Phone
+    </button>
+  </div>
+  <div id="search-bar">
+    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input id="search-input" type="search" placeholder="Search all topics…" autocomplete="off" autocorrect="off" spellcheck="false">
+    <button id="search-clear" onclick="clearSearch()">✕</button>
+  </div>
+</div>
+
+<!-- Search results (shown when searching) -->
+<div id="search-results-page">
+  <div class="search-results-header" id="search-results-header"></div>
+  <div id="search-results-list"></div>
+</div>
+
+<!-- Main content -->
+<div id="content">
+
+  <!-- ══════════ HOME PAGE ══════════ -->
+  <div id="page-home" class="page active">
+    <div class="home-hero">
+      <div class="home-hero-label">Your Complete Guide</div>
+      <div class="home-hero-title">Know what to<br>expect. Ask great<br>questions.</div>
+      <div class="home-hero-desc">From your first prenatal visit through delivery and recovery — everything in one place.</div>
+    </div>
+
+    <div class="quick-nav">
+      <button class="qnav-btn" onclick="navigate('pregnancy')">
+        <div class="qnav-icon" style="background:var(--teal-light)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <span class="qnav-label">Prenatal<br>Visits</span>
+      </button>
+      <button class="qnav-btn" onclick="navigate('labor')">
+        <div class="qnav-icon" style="background:var(--gold-light)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M4.5 22H20a2 2 0 000-4H9a2 2 0 010-4h8.5"/><path d="M12 2v8"/><path d="M8 6l4-4 4 4"/></svg>
+        </div>
+        <span class="qnav-label">Labor &amp;<br>Delivery</span>
+      </button>
+      <button class="qnav-btn" onclick="navigate('recovery')">
+        <div class="qnav-icon" style="background:var(--rose-light)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        </div>
+        <span class="qnav-label">Postpartum<br>Recovery</span>
+      </button>
+      <button class="qnav-btn" onclick="navigate('baby')">
+        <div class="qnav-icon" style="background:var(--navy-light)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0112 0v2"/></svg>
+        </div>
+        <span class="qnav-label">Your<br>Newborn</span>
+      </button>
+      <button class="qnav-btn" onclick="navigate('faq')">
+        <div class="qnav-icon" style="background:var(--plum-light)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--plum)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        </div>
+        <span class="qnav-label">FAQ &amp;<br>Myths</span>
+      </button>
+      <button class="qnav-btn" onclick="navigate('myinfo')">
+        <div class="qnav-icon" style="background:var(--navy-light)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 9.91a16 16 0 006.16 6.16l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        </div>
+        <span class="qnav-label">My Info &amp;<br>Contacts</span>
+      </button>
+    </div>
+
+    <!-- My Info quick strip -->
+    <div class="info-strip" onclick="navigate('myinfo')">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 9.91a16 16 0 006.16 6.16l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+      <div class="info-strip-text">
+        <div class="info-strip-title">Save Your Care Team Contacts</div>
+        <div class="info-strip-sub">Tap to call or text directly from the app</div>
+      </div>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    </div>
+
+    <!-- Quick reference -->
+    <div class="qref-card">
+      <div class="qref-header">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c44" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span class="qref-header-title">Call Your Provider If…</span>
+      </div>
+      <div class="qref-body">
+        <div class="qref-cols">
+          <div>
+            <div class="qref-col-title teal">During Pregnancy</div>
+            <ul class="qref-list">
+              <li>Vaginal bleeding</li>
+              <li>Fluid gushing or trickling</li>
+              <li>Baby not moving normally</li>
+              <li>Severe headache</li>
+              <li>Vision changes</li>
+              <li>Sudden swelling of face/hands</li>
+              <li>Fever &gt;100.4°F</li>
+              <li>Contractions before 37 weeks</li>
+            </ul>
+          </div>
+          <div>
+            <div class="qref-col-title rose">After Delivery</div>
+            <ul class="qref-list">
+              <li>Soaking &gt;1 pad/hr × 2 hrs</li>
+              <li>Fever &gt;100.4°F</li>
+              <li>Wound opens or oozes</li>
+              <li>Severe headache</li>
+              <li>Leg redness/swelling</li>
+              <li>Chest pain or trouble breathing</li>
+              <li>Thoughts of self-harm</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:16px"></div>
+  </div>
+  <!-- END HOME -->
+
+  <!-- ══════════ PREGNANCY PAGE ══════════ -->
+  <div id="page-pregnancy" class="page">
+    <div class="section-hero">
+      <div class="hero-label">Section 1</div>
+      <div class="hero-title">Prenatal Visits<br>&amp; Pregnancy</div>
+      <div class="hero-desc">A visit-by-visit guide, cervical exams explained, exercise during pregnancy, and what to ask at each stage.</div>
+    </div>
+    <div class="cards" id="cards-pregnancy"></div>
+  </div>
+
+  <!-- ══════════ LABOR PAGE ══════════ -->
+  <div id="page-labor" class="page">
+    <div class="section-hero gold-hero">
+      <div class="hero-label">Section 2</div>
+      <div class="hero-title">Labor &amp;<br>Delivery</div>
+      <div class="hero-desc">Signs of labor, what happens when you arrive, pain management options, C-section, and high-risk care.</div>
+    </div>
+    <div class="cards" id="cards-labor"></div>
+  </div>
+
+  <!-- ══════════ RECOVERY PAGE ══════════ -->
+  <div id="page-recovery" class="page">
+    <div class="section-hero rose-hero">
+      <div class="hero-label">Section 3</div>
+      <div class="hero-title">Postpartum<br>Recovery</div>
+      <div class="hero-desc">Physical healing, mood and PPD, pelvic rest, returning to exercise, and when to go home.</div>
+    </div>
+    <div class="cards" id="cards-recovery"></div>
+  </div>
+
+  <!-- ══════════ BABY PAGE ══════════ -->
+  <div id="page-baby" class="page">
+    <div class="section-hero navy-hero">
+      <div class="hero-label">Section 4</div>
+      <div class="hero-title">Your<br>Newborn</div>
+      <div class="hero-desc">Breastfeeding, formula, cord care, safe sleep, normal newborn appearance, and follow-up appointments.</div>
+    </div>
+    <div class="cards" id="cards-baby"></div>
+  </div>
+
+  <!-- ══════════ FAQ PAGE ══════════ -->
+  <div id="page-faq" class="page">
+    <div class="section-hero plum-hero">
+      <div class="hero-label">Section 5</div>
+      <div class="hero-title">FAQ &amp;<br>Common Myths</div>
+      <div class="hero-desc">Evidence-based answers to the most common questions — including things you've heard from family, friends, and the internet.</div>
+    </div>
+    <div class="cards" id="cards-faq"></div>
+  </div>
+
+  <!-- ══════════ MY INFO PAGE ══════════ -->
+  <div id="page-myinfo" class="page">
+    <div class="myinfo-hero">
+      <div class="hero-label">My Information</div>
+      <div class="myinfo-hero-title">My Care Team &amp;<br>Key Details</div>
+      <div class="myinfo-hero-sub">Saved on your phone · Tap to call or text</div>
+    </div>
+
+    <!-- Contacts -->
+    <div class="form-section mt16" id="contacts-form">
+      <div class="form-section-title">Care Team Contacts</div>
+      <!-- rendered by JS -->
+    </div>
+
+    <!-- My Details -->
+    <div class="form-section mt16" id="details-form">
+      <div class="form-section-title navy">My Pregnancy Details</div>
+      <!-- rendered by JS -->
+    </div>
+
+    <!-- Notes -->
+    <div class="form-section mt16">
+      <div class="form-section-title">Questions for My Provider</div>
+      <div style="padding:12px 16px">
+        <textarea id="notes-field" rows="5" placeholder="Write questions here as you think of them…" style="width:100%;border:1.5px solid var(--rule);border-radius:var(--radius-sm);padding:10px 12px;font-family:var(--font-sans);font-size:14px;color:var(--ink);background:var(--bg);outline:none;resize:vertical;transition:border-color .2s;line-height:1.5"></textarea>
+      </div>
+    </div>
+
+    <div class="myinfo-save-bar">
+      <button id="save-btn" onclick="saveInfo()">Save My Information</button>
+    </div>
+  </div>
+  <!-- END MY INFO -->
+
+</div>
+<!-- END CONTENT -->
+
+<!-- Bottom Nav -->
+<nav id="nav">
+  <button class="nav-btn active" id="navbtn-home" onclick="navigate('home')">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span class="nav-label">Home</span>
+  </button>
+  <button class="nav-btn" id="navbtn-pregnancy" onclick="navigate('pregnancy')">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+    <span class="nav-label">Prenatal</span>
+  </button>
+  <button class="nav-btn" id="navbtn-labor" onclick="navigate('labor')">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z"/></svg>
+    <span class="nav-label">Labor</span>
+  </button>
+  <button class="nav-btn" id="navbtn-recovery" onclick="navigate('recovery')">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+    <span class="nav-label">Recovery</span>
+  </button>
+  <button class="nav-btn" id="navbtn-baby" onclick="navigate('baby')">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0112 0v2"/></svg>
+    <span class="nav-label">Baby</span>
+  </button>
+  <button class="nav-btn" id="navbtn-faq" onclick="navigate('faq')">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <span class="nav-label">FAQ</span>
+  </button>
+  <button class="nav-btn" id="navbtn-myinfo" onclick="navigate('myinfo')">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span class="nav-label">My Info</span>
+  </button>
+</nav>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+</div><!-- end #app -->
+
+<script>
+// ═══════════════════════════════════════════════════════
+// CONTENT DATA
+// ═══════════════════════════════════════════════════════
+
+const CONTENT = {
+  pregnancy: [
+    {
+      id: 'first-trimester',
+      title: 'First Trimester Visits (Weeks 4–14)',
+      sub: 'What to expect at your earliest appointments',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>`,
+      color: '',
+      body: `
+        <p class="lead">Your first prenatal visit is usually around 8–10 weeks and is one of the longest — bring your questions and your partner if you have one.</p>
+        <h4>First Visit (8–10 Weeks)</h4>
+        <ul>
+          <li>Full health history, physical exam, pelvic exam, Pap smear (if due)</li>
+          <li>Blood work: blood type &amp; Rh factor, CBC, rubella immunity, HIV, hepatitis B, STI screening</li>
+          <li>Urine test for infection, protein, glucose</li>
+          <li>Blood pressure baseline, weight, due date confirmation by ultrasound</li>
+        </ul>
+        <div class="callout gold">
+          <div class="callout-title">Ask at This Visit</div>
+          <p>What medications and supplements are safe? Food and travel safety? Exercise limits? What are my specific risk factors?</p>
+        </div>
+        <h4>Genetic Screening (10–13 Weeks) — Your Choice</h4>
+        <ul>
+          <li><strong>NIPT (cell-free DNA)</strong> — blood test screening for chromosomal conditions including Down syndrome, Trisomy 18, Trisomy 13. Very accurate, but still a screening (not diagnostic) test.</li>
+          <li><strong>Nuchal translucency ultrasound</strong> — measures fluid at back of baby's neck, often combined with NIPT</li>
+          <li>If screening is abnormal, diagnostic testing (CVS or amniocentesis) is offered</li>
+        </ul>
+        <p>These tests are <em>optional</em>. Think about what you would do with results — your provider can help you decide if testing is right for you.</p>
+        <div class="callout">
+          <div class="callout-title">At Every Visit</div>
+          <p>Blood pressure, weight, and urine are checked. Baby's heartbeat is audible by Doppler at 10–12 weeks. Always mention new symptoms, bleeding, or pain.</p>
+        </div>`
+    },
+    {
+      id: 'second-trimester',
+      title: 'Second Trimester Visits (Weeks 15–27)',
+      sub: 'Anatomy scan, glucose test, and more',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+      color: '',
+      body: `
+        <p class="lead">Visits are every 4 weeks. The anatomy ultrasound at 18–20 weeks is a major milestone — the most detailed look at your baby before birth.</p>
+        <h4>Anatomy Ultrasound (18–20 Weeks)</h4>
+        <ul>
+          <li>Detailed scan of baby's brain, heart, spine, kidneys, limbs, and face</li>
+          <li>Checks placenta location — important if low-lying (possible previa)</li>
+          <li>Measures cervical length — short cervix raises preterm birth risk</li>
+          <li>Estimates amniotic fluid level</li>
+          <li>This is when many families learn baby's sex if they want to know</li>
+        </ul>
+        <div class="callout gold">
+          <div class="callout-title">Ask at This Visit</div>
+          <p>Where is my placenta? What's my cervical length? Is baby's growth on track? Do any findings need follow-up?</p>
+        </div>
+        <h4>Optional Quad Screen / AFP (15–20 Weeks)</h4>
+        <p>Blood test screening for neural tube defects and chromosomal issues. Ask your provider if you need this if you already had NIPT.</p>
+        <h4>Glucose Challenge Test (24–28 Weeks)</h4>
+        <ul>
+          <li>Screens for gestational diabetes — you drink a sugary drink and have blood drawn 1 hour later</li>
+          <li>If the result is elevated (not "failed" — it's a screen), you do a longer 3-hour diagnostic test</li>
+          <li>Gestational diabetes is manageable — diet, exercise, sometimes medication</li>
+        </ul>
+        <div class="callout">
+          <div class="callout-title">Start Thinking About</div>
+          <p>Childbirth classes, birth preferences, breastfeeding intentions, pediatrician selection, leave planning, baby gear.</p>
+        </div>`
+    },
+    {
+      id: 'third-trimester',
+      title: 'Third Trimester Visits (Weeks 28–40+)',
+      sub: 'Weekly visits, GBS swab, cervical checks',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+      color: '',
+      body: `
+        <p class="lead">Visits increase to every 2 weeks after 28 weeks, then weekly after 36. The finish line is in sight.</p>
+        <h4>28 Weeks — Rh Factor &amp; Tdap</h4>
+        <ul>
+          <li><strong>RhoGAM injection</strong> if you are Rh-negative — prevents your immune system from attacking a future Rh-positive baby</li>
+          <li><strong>Tdap vaccine</strong> (whooping cough booster) — strongly recommended 27–36 weeks. Antibodies pass to baby through the placenta, protecting the newborn before they can be vaccinated</li>
+        </ul>
+        <h4>35–37 Weeks — Group B Strep (GBS) Swab</h4>
+        <p>A simple vaginal and rectal swab. About 25% of women carry GBS normally — it's not an STI and doesn't harm you. If positive, you'll receive IV antibiotics during labor to protect baby from infection during delivery.</p>
+        <h4>36–40 Weeks — Cervical Checks &amp; Baby's Position</h4>
+        <ul>
+          <li>Your provider may offer to check your cervix — how dilated and effaced it is</li>
+          <li>Baby's position is confirmed (head-down is ideal)</li>
+          <li>Discuss induction plans: ACOG recommends delivery by 42 weeks; many providers offer elective induction at 39 weeks</li>
+        </ul>
+        <div class="callout">
+          <div class="callout-title">Ask at 36+ Weeks</div>
+          <p>When would you recommend inducing? What's the plan if I go past my due date? When should I go to the hospital?</p>
+        </div>`
+    },
+    {
+      id: 'sve',
+      title: 'Cervical Exams (SVE) Explained',
+      sub: 'Dilation, effacement, and station',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+      color: '',
+      body: `
+        <p class="lead">SVE stands for Sterile Vaginal Exam. It's how your provider checks whether your cervix is preparing for — or progressing through — labor.</p>
+        <p>Your provider uses two gloved fingers to feel the cervix and assess three things:</p>
+        <table class="data-table">
+          <tr><th>What's Checked</th><th>What It Means</th></tr>
+          <tr><td><strong>Dilation</strong><br>0–10 cm</td><td>How open the cervix is. 10 cm = fully open, ready to push.</td></tr>
+          <tr><td><strong>Effacement</strong><br>0–100%</td><td>How thinned out the cervix is. 100% = completely thinned.</td></tr>
+          <tr><td><strong>Station</strong><br>-5 to +5</td><td>How far baby's head has descended. 0 = at the ischial spines (midpoint). +3 to +5 = nearly out.</td></tr>
+        </table>
+        <div class="callout">
+          <div class="callout-title">The Bishop Score</div>
+          <p>Providers sometimes use a combined score (Bishop Score) that includes dilation, effacement, station, cervical consistency, and position to predict how labor-ready your cervix is. A score ≥ 8 suggests a favorable cervix and successful induction.</p>
+        </div>
+        <p>SVEs in late pregnancy are optional — cervical dilation at 36–38 weeks doesn't predict exactly when labor will start. During active labor, SVEs every 2–4 hours track your progress toward 10 cm.</p>`
+    },
+    {
+      id: 'exercise-pregnancy',
+      title: 'Exercise During Pregnancy',
+      sub: 'Benefits, safe activities, and what to avoid',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>`,
+      color: '',
+      body: `
+        <p class="lead">Regular moderate exercise is safe and beneficial for most pregnant women. ACOG recommends 150 minutes of moderate activity per week.</p>
+        <h4>Benefits</h4>
+        <ul>
+          <li>Reduces back pain, swelling, constipation, and fatigue</li>
+          <li>Lowers risk of gestational diabetes, preeclampsia, and excessive weight gain</li>
+          <li>Improves sleep, mood, and energy levels</li>
+          <li>Often leads to shorter labor and faster recovery</li>
+          <li>Babies of active mothers often have healthier heart rate patterns</li>
+        </ul>
+        <h4>Good Choices at Any Stage</h4>
+        <ul>
+          <li><strong>Walking</strong> — easiest, safest, and accessible at any fitness level</li>
+          <li><strong>Swimming &amp; water aerobics</strong> — excellent in the third trimester; takes weight off joints</li>
+          <li><strong>Prenatal yoga or Pilates</strong> — builds core and pelvic floor strength, reduces back pain</li>
+          <li><strong>Stationary cycling</strong> — low fall risk, good cardio</li>
+          <li><strong>Modified strength training</strong> — light to moderate weights; avoid breath-holding (Valsalva)</li>
+          <li><strong>Kegel exercises</strong> — contract and release the pelvic floor, 3 sets of 10 daily, every day</li>
+        </ul>
+        <h4>What to Avoid After the First Trimester</h4>
+        <ul>
+          <li>Exercises lying flat on your back (compresses the vena cava)</li>
+          <li>Contact sports or activities with fall or collision risk</li>
+          <li>Scuba diving (decompression risk to baby)</li>
+          <li>Hot yoga or exercising in extreme heat</li>
+          <li>High altitude activities if not acclimatized</li>
+        </ul>
+        <div class="callout">
+          <div class="callout-title">The Talk Test</div>
+          <p>You should be able to carry on a conversation while exercising. Too winded to talk? Slow down. This is a simple proxy for keeping intensity in the safe range.</p>
+        </div>
+        <div class="callout alert">
+          <div class="callout-title">Stop &amp; Call Your Provider If</div>
+          <p>Vaginal bleeding, dizziness, chest pain, severe shortness of breath, contractions, fluid leaking, decreased fetal movement, or calf pain and swelling.</p>
+        </div>`
+    },
+  ],
+
+  labor: [
+    {
+      id: 'signs-of-labor',
+      title: 'Signs of Labor: When to Go In',
+      sub: 'True labor vs. Braxton Hicks, and the 5-1-1 rule',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>`,
+      color: 'gold',
+      body: `
+        <p class="lead gold">Knowing real labor from false labor saves a lot of unnecessary trips. Here's how to tell the difference.</p>
+        <table class="data-table">
+          <tr><th>True Labor</th><th>Braxton Hicks</th></tr>
+          <tr><td>Gets longer, stronger, closer together</td><td>Irregular, don't intensify over time</td></tr>
+          <tr><td>Does not stop with rest or activity</td><td>Often stop with position change or hydration</td></tr>
+          <tr><td>Pain often starts in back, radiates forward</td><td>Usually felt only in front</td></tr>
+          <tr><td>Cervix is changing</td><td>Cervix unchanged</td></tr>
+        </table>
+        <div class="callout gold">
+          <div class="callout-title">The 5-1-1 Rule (First Baby)</div>
+          <p>Head to the hospital when contractions are <strong>5 minutes apart, lasting 1 minute, for at least 1 hour</strong>. For second or later babies, go sooner — call at 6–8 minutes apart, as labor moves faster.</p>
+        </div>
+        <div class="callout alert">
+          <div class="callout-title">Go In Immediately If Any of These</div>
+          <p><strong>Water breaks</strong> (gush or constant trickle) · Bright red bleeding (more than spotting) · Baby has stopped moving · Severe constant abdominal pain · Signs of preeclampsia: severe headache not relieved by Tylenol, vision changes, sudden severe swelling</p>
+        </div>
+        <h4>Early Labor at Home</h4>
+        <p>If contractions are mild and irregular, early labor is actually more comfortable at home. Try: warm shower, walking, resting, staying hydrated, eating a light snack while you still can.</p>`
+    },
+    {
+      id: 'what-happens-on-arrival',
+      title: 'What Happens When You Arrive at L&D',
+      sub: 'Triage, admission, and getting settled',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>`,
+      color: 'gold',
+      body: `
+        <p class="lead gold">You'll be assessed in triage before being admitted to a labor room. This process ensures you and baby are stable and that you're truly in active labor.</p>
+        <h4>Step 1: Triage Assessment</h4>
+        <ul>
+          <li>SVE to check cervical dilation and effacement</li>
+          <li>External fetal monitor applied — two straps around your belly, one tracking contractions and one tracking baby's heart rate</li>
+          <li>Blood pressure, temperature, pulse, oxygen saturation checked</li>
+          <li>IV access placed (a small catheter in your arm, standard procedure)</li>
+          <li>Urine sample</li>
+          <li>GBS status confirmed from your prenatal records</li>
+        </ul>
+        <h4>Step 2: Admitted or Asked to Wait</h4>
+        <p>If your cervix is less than 4–6 cm (depending on the hospital and circumstances), you may be sent home or asked to walk around for 1–2 hours for a recheck. This is not a rejection — early labor is genuinely safer and more comfortable at home. Don't be discouraged.</p>
+        <h4>Step 3: Labor Room</h4>
+        <p>Once admitted, you're in your room for the duration. Your nurse is your primary guide and will be checking on you regularly. This is the time to discuss your birth preferences and pain management options.</p>
+        <div class="callout gold">
+          <div class="callout-title">Bring This to the Hospital</div>
+          <p>ID and insurance card · This booklet with your contacts · Phone charger · Comfortable clothes for labor and recovery · Baby's going-home outfit and car seat · Toiletries · Snacks for support person</p>
+        </div>`
+    },
+    {
+      id: 'stages-of-labor',
+      title: 'The Stages of Labor',
+      sub: 'What your body is doing and how long it takes',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+      color: 'gold',
+      body: `
+        <table class="data-table">
+          <tr><th class="gold">Stage</th><th class="gold">What's Happening</th><th class="gold">Typical Length</th></tr>
+          <tr><td><strong>Stage 1 Early</strong><br>0–6 cm</td><td>Cervix dilates; contractions begin — may feel like strong period cramps or back ache</td><td>Hours to many hours; highly variable</td></tr>
+          <tr><td><strong>Stage 1 Active</strong><br>6–10 cm</td><td>Contractions intensify — every 3–5 min, lasting 45–60 sec. This is when most women use pain management</td><td>1–8 hrs first baby; faster with subsequent</td></tr>
+          <tr><td><strong>Stage 1 Transition</strong><br>8–10 cm</td><td>The most intense — contractions every 2–3 min. Short, but the hardest. Baby descends</td><td>15–60 minutes</td></tr>
+          <tr><td><strong>Stage 2 Pushing</strong><br>10 cm</td><td>Fully dilated — time to push. Strong urge to bear down. Baby's head crowns</td><td>20 min–3 hrs (first baby)</td></tr>
+          <tr><td><strong>Stage 3 Placenta</strong></td><td>Placenta delivers after baby. You may receive Pitocin (oxytocin) to help uterus contract</td><td>5–30 minutes</td></tr>
+        </table>
+        <div class="callout gold">
+          <div class="callout-title">Induction of Labor</div>
+          <p>If your cervix needs help, your provider may use medications (misoprostol, oxytocin/Pitocin) or a balloon catheter to ripen and open the cervix. Induction can take 12–24+ hours, especially with a first baby and an unfavorable cervix. Plan for it to take time.</p>
+        </div>
+        <h4>Fetal Monitoring</h4>
+        <p>Most hospitals use continuous electronic fetal monitoring during active labor. This tracks baby's heart rate patterns relative to contractions, helping the team identify any signs of distress early. If you want to walk or use a tub, ask about wireless (telemetry) monitors if available.</p>`
+    },
+    {
+      id: 'pain-management',
+      title: 'Pain Management: All Your Options',
+      sub: 'From unmedicated techniques to epidural',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+      color: 'gold',
+      body: `
+        <p class="lead gold">There's no single right way to manage labor pain. Your goal is a healthy baby and a birth experience you feel good about — not any particular method.</p>
+        <h4>Non-Medication Options</h4>
+        <ul>
+          <li><strong>Hydrotherapy</strong> — laboring in a shower or tub significantly reduces pain for many women. One of the most effective non-medication strategies</li>
+          <li><strong>Movement &amp; positioning</strong> — walking, rocking, hands-and-knees, birthing ball, side-lying all change how contractions feel</li>
+          <li><strong>Breathing techniques</strong> — slow patterned breathing is one of the most effective tools available. Childbirth class teaches this well</li>
+          <li><strong>Counter-pressure</strong> — firm pressure on your sacrum (lower back) during contractions dramatically reduces back labor pain</li>
+          <li><strong>TENS unit</strong> — small electrical pulses on the lower back disrupt pain signals; most helpful in early labor</li>
+          <li><strong>Heat &amp; cold</strong> — heat pack on the lower back, cold on the forehead</li>
+        </ul>
+        <h4>Nitrous Oxide (Laughing Gas)</h4>
+        <p>Inhaled through a mask that <em>you</em> hold and control during contractions. Takes the edge off without fully blocking pain. Wears off within 5 minutes. Can cause lightheadedness or nausea in some women. Available at many U.S. hospitals — ask if it's offered at yours.</p>
+        <h4>IV / IM Opioid Medications</h4>
+        <p>Medications like fentanyl or morphine given through your IV take the edge off but don't eliminate pain. Can cause drowsiness, nausea, and itching. Cross to baby in small amounts — timing matters (avoid close to delivery so baby is alert for birth).</p>
+        <div class="callout gold">
+          <div class="callout-title">You Can Change Your Mind</div>
+          <p>Choosing to start unmedicated and requesting an epidural later is completely normal and valid. Similarly, planning an epidural and then having a fast labor that doesn't allow time for one is also common. Stay flexible.</p>
+        </div>`
+    },
+    {
+      id: 'epidural',
+      title: 'The Epidural: What to Know',
+      sub: 'How it works, risks, and facts vs. myths',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M5 7l7-7 7 7"/><path d="M12 21V5"/></svg>`,
+      color: 'gold',
+      body: `
+        <p class="lead gold">An epidural is the most effective form of labor pain relief. About 75% of women delivering in U.S. hospitals use one.</p>
+        <h4>How It Works</h4>
+        <p>An anesthesiologist places a small flexible catheter (thin tube) in the epidural space of your lower back — not into the spinal cord itself. Local anesthetic and/or opioid medication flows through the catheter, numbing the nerves that carry pain signals from the uterus. You remain fully awake and can usually still feel pressure and move your legs.</p>
+        <h4>What to Expect</h4>
+        <ul>
+          <li>Placement takes 10–15 minutes; you'll need to hold very still during contractions</li>
+          <li>Full effect in 15–20 minutes</li>
+          <li>Requires continuous fetal monitoring and an IV</li>
+          <li>Blood pressure is checked frequently — a brief drop is common and very manageable with IV fluids or medication</li>
+          <li>You may feel less urge to push — nurses will guide you through pushing</li>
+          <li>A urinary catheter is usually placed once you're numb</li>
+        </ul>
+        <h4>Actual Risks (Uncommon)</h4>
+        <ul>
+          <li><strong>Spinal headache</strong> (~1%): caused by a small dural puncture. Treatable with a "blood patch"</li>
+          <li><strong>Temporary low blood pressure</strong>: very common, very manageable</li>
+          <li><strong>Incomplete relief</strong>: occasionally requires repositioning or a new placement</li>
+          <li><strong>Itching</strong>: from the opioid component, usually mild</li>
+          <li><strong>Fever</strong>: epidural-associated fever is real but usually benign and managed</li>
+        </ul>
+        <div class="callout">
+          <div class="callout-title">Key Fact — The C-Section Myth</div>
+          <p>Epidurals do <strong>not</strong> increase C-section rates — this is one of the most common and well-studied myths in obstetrics. Multiple large randomized trials confirm this. You can request an epidural at any point in active labor.</p>
+        </div>`
+    },
+    {
+      id: 'csection',
+      title: 'C-Section: Why It Happens & What to Expect',
+      sub: 'Planned vs. unplanned, the procedure, recovery',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>`,
+      color: 'gold',
+      body: `
+        <p class="lead gold">A cesarean section is a surgical delivery through incisions in the abdomen and uterus. About 30% of U.S. births are by C-section.</p>
+        <h4>Planned (Scheduled) Reasons</h4>
+        <ul>
+          <li>Placenta previa — placenta covers the cervical opening</li>
+          <li>Baby in breech (feet-down) or transverse (sideways) position that hasn't turned</li>
+          <li>Prior classic (vertical) uterine incision</li>
+          <li>Twins or higher multiples in certain positions</li>
+          <li>Certain maternal conditions (severe heart disease, active genital herpes outbreak)</li>
+        </ul>
+        <h4>Unplanned Reasons During Labor</h4>
+        <ul>
+          <li>Non-reassuring fetal heart rate (baby showing signs of distress)</li>
+          <li>Labor arrest — no progress despite adequate contractions and time</li>
+          <li>Placental abruption — placenta detaches prematurely</li>
+          <li>Umbilical cord prolapse — cord comes through the cervix before baby</li>
+        </ul>
+        <h4>In the Operating Room</h4>
+        <ul>
+          <li>Spinal or epidural anesthesia — you are awake and numb from chest down</li>
+          <li>A screen blocks the surgical field — you can ask for it to be lowered at the moment of birth</li>
+          <li>Your support person can usually be with you</li>
+          <li>You'll feel pressure and pulling — not pain</li>
+          <li>Baby is often placed on your chest immediately even in the OR ("gentle cesarean")</li>
+          <li>Total time: about 45–60 minutes; the birth itself takes 5–10 minutes</li>
+        </ul>
+        <h4>Recovery After C-Section</h4>
+        <ul>
+          <li>Hospital stay: 2–4 days (vs. 1–2 days after vaginal birth)</li>
+          <li>Pain managed with scheduled ibuprofen + acetaminophen ± short-term opioids</li>
+          <li>Walking starts the same day — critical for preventing blood clots</li>
+          <li>No lifting anything heavier than your baby for 4–6 weeks</li>
+          <li>Incision is a horizontal "bikini-line" scar, closed with staples or absorbable sutures</li>
+        </ul>
+        <div class="callout alert">
+          <div class="callout-title">Call After C-Section Discharge If</div>
+          <p>Incision opens, shows redness spreading outward, or has unusual drainage · Fever &gt;100.4°F · Worsening rather than improving pain · Soaking a pad in 1 hour</p>
+        </div>
+        <div class="callout gold">
+          <div class="callout-title">VBAC — Vaginal Birth After Cesarean</div>
+          <p>If you've had one prior low-transverse C-section, a VBAC may be an option for this pregnancy. Success rates are 60–80%. Discuss this early in your prenatal care.</p>
+        </div>`
+    },
+    {
+      id: 'mfm',
+      title: 'High-Risk Pregnancy & MFM Referral',
+      sub: 'What MFM is and why you might be referred',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>`,
+      color: 'gold',
+      body: `
+        <p class="lead gold">MFM stands for Maternal-Fetal Medicine — a subspecialist OB who focuses on high-risk pregnancies. A referral is a sign you're getting expert oversight, not a cause for panic.</p>
+        <h4>Common Reasons for MFM Referral</h4>
+        <ul>
+          <li>Preeclampsia or chronic high blood pressure</li>
+          <li>Pregestational (Type 1 or 2) diabetes or gestational diabetes requiring insulin</li>
+          <li>Twins, triplets, or higher-order multiples</li>
+          <li>History of preterm birth (before 37 weeks)</li>
+          <li>Short cervix found on ultrasound (cervical incompetence)</li>
+          <li>Fetal growth restriction or structural abnormality on anatomy scan</li>
+          <li>Autoimmune conditions: lupus, antiphospholipid syndrome</li>
+          <li>Chronic kidney disease, heart disease, blood clotting disorders</li>
+          <li>Abnormal genetic screening results requiring follow-up</li>
+          <li>Advanced maternal age (&gt;35) with complications</li>
+        </ul>
+        <h4>What MFM Actually Does</h4>
+        <ul>
+          <li>Performs specialized ultrasounds — detailed fetal anatomy survey, fetal echocardiogram, serial growth scans</li>
+          <li>Advises on medications, delivery timing, and mode of delivery</li>
+          <li>May co-manage your care alongside your OB or midwife, or take over primary care in complex cases</li>
+          <li>Most patients still deliver with their original provider</li>
+        </ul>
+        <div class="callout">
+          <div class="callout-title">Ask Your MFM</div>
+          <p>What is the specific concern? How will it be monitored? Does it change how or when I deliver? Will I need more frequent visits or ultrasounds?</p>
+        </div>`
+    },
+  ],
+
+  recovery: [
+    {
+      id: 'immediate-postpartum',
+      title: 'The First Hours After Delivery',
+      sub: 'The "fourth stage" — what\'s being monitored',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>`,
+      color: 'rose',
+      body: `
+        <p class="lead rose">The first two hours after birth — called the "fourth stage of labor" — are the most important time for monitoring. Your nurse will be checking on you frequently.</p>
+        <h4>What's Being Monitored</h4>
+        <ul>
+          <li><strong>Your uterus</strong> — nurses check that it's firm and well-contracted to prevent hemorrhage. They'll press on your abdomen periodically.</li>
+          <li><strong>Bleeding (lochia)</strong> — amount and color are tracked</li>
+          <li><strong>Blood pressure and heart rate</strong></li>
+          <li><strong>Your perineum or incision</strong></li>
+          <li><strong>Pain level</strong> — don't wait for pain to become severe; ask for medication proactively</li>
+        </ul>
+        <h4>Skin-to-Skin Contact</h4>
+        <p>Placing baby on your bare chest immediately after birth — even after C-section — regulates baby's temperature, blood sugar, and breathing, stabilizes heart rate, and strongly promotes bonding and breastfeeding initiation. Ask for this to happen unless there's a specific medical reason it can't.</p>
+        <div class="callout rose">
+          <div class="callout-title">Delayed Cord Clamping</div>
+          <p>Waiting 30–60 seconds (or longer) before clamping and cutting the umbilical cord transfers an extra 80–100 mL of iron-rich blood to baby. This is now standard practice at most U.S. hospitals. You can confirm it's planned ahead of time.</p>
+        </div>
+        <h4>Your First Meal</h4>
+        <p>After a vaginal birth, you can usually eat shortly after delivery. After a C-section, clear liquids first, then regular food as tolerated — typically within a few hours.</p>`
+    },
+    {
+      id: 'physical-recovery',
+      title: 'Physical Recovery: What to Expect',
+      sub: 'Lochia, perineal care, pain management',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5H20c.83 0 1.5.67 1.5 1.5S20.83 16 20 16h-4.5c-.83 0-1.5-.67-1.5-1.5z"/><path d="M15.5 19H14v-1.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M10 9.5C10 8.67 9.33 8 8.5 8H4c-.83 0-1.5.67-1.5 1.5S3.17 11 4 11h4.5c.83 0 1.5-.67 1.5-1.5z"/><path d="M8.5 5H10v1.5c0 .83-.67 1.5-1.5 1.5S7 7.33 7 6.5 7.67 5 8.5 5z"/></svg>`,
+      color: 'rose',
+      body: `
+        <h4>Postpartum Bleeding (Lochia)</h4>
+        <p>Lochia is normal discharge as the uterine lining sheds and the placental site heals. It changes over time:</p>
+        <table class="data-table">
+          <tr><th class="rose">Days</th><th class="rose">Appearance</th><th class="rose">Normal?</th></tr>
+          <tr><td>1–4</td><td>Bright red, like a heavy period</td><td>✓ Yes</td></tr>
+          <tr><td>5–10</td><td>Pink to brown, lighter flow</td><td>✓ Yes</td></tr>
+          <tr><td>10–28+</td><td>Yellow-white, scant</td><td>✓ Yes</td></tr>
+        </table>
+        <div class="callout alert">
+          <div class="callout-title">Call Your Provider If</div>
+          <p>Soaking more than 1 pad per hour for 2 consecutive hours · Passing golf ball-sized clots · Bright red bleeding returns after it has lightened · Foul-smelling discharge</p>
+        </div>
+        <h4>Perineal Care (After Vaginal Birth)</h4>
+        <ul>
+          <li>Use peri-bottle with warm water after every bathroom visit — front to back</li>
+          <li>Ice packs for the first 24 hours, then switch to warm sitz baths (10–15 min, 2–3x/day)</li>
+          <li>Witch hazel pads (e.g., Tucks) soothe swelling and hemorrhoids</li>
+          <li><strong>Stool softener (docusate/colace)</strong> — start immediately; constipation with perineal stitches is very uncomfortable and straining risks tearing stitches</li>
+        </ul>
+        <h4>Pain Management</h4>
+        <p>Alternating ibuprofen (600 mg every 6 hours) and acetaminophen (650 mg every 6 hours) on a scheduled basis works much better than waiting for pain to spike. Ask your nurse for a written schedule on Day 1 and stick to it.</p>`
+    },
+    {
+      id: 'mood-ppd',
+      title: 'Mood & Emotional Recovery',
+      sub: 'Baby blues, PPD, and when to ask for help',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>`,
+      color: 'rose',
+      body: `
+        <p class="lead rose">Dramatic hormonal changes after delivery affect mood significantly. Emotional shifts are expected — but some symptoms need attention.</p>
+        <h4>Baby Blues (Normal — Up to 80% of Mothers)</h4>
+        <p>Tearfulness, mood swings, anxiety, and irritability in the first week after birth, driven by a sharp drop in estrogen and progesterone. Baby blues typically resolve on their own within 2 weeks.</p>
+        <h4>Postpartum Depression (PPD) — 1 in 8 Mothers</h4>
+        <p>PPD is a medical condition — a treatable mood disorder, not a character flaw or a sign of bad mothering.</p>
+        <div class="callout rose">
+          <div class="callout-title">Symptoms of PPD</div>
+          <p>Persistent sadness or emptiness · Difficulty bonding with your baby · Feeling like a bad mother or that your baby would be better off without you · Severe anxiety or panic attacks · Inability to sleep even when baby sleeps · Loss of interest in things you used to enjoy · Thoughts of harming yourself or baby</p>
+        </div>
+        <p>If these symptoms persist beyond 2 weeks or are severe at any point, tell your care team. PPD is effectively treated with therapy, support groups, and/or medication (many of which are safe with breastfeeding). <strong>Don't wait until your 6-week visit to mention it.</strong></p>
+        <div class="callout alert">
+          <div class="callout-title">Postpartum Psychosis — Rare but a Medical Emergency</div>
+          <p>Hallucinations, delusions, extreme confusion, or agitation in the days after birth. Call 911 or go to the ER immediately. This is rare (1–2 in 1,000) but requires urgent treatment.</p>
+        </div>
+        <h4>Postpartum Anxiety</h4>
+        <p>Less discussed but very common. Excessive, intrusive worry about baby's safety, difficulty sleeping even when exhausted, constant checking, physical symptoms like racing heart. Also very treatable — mention it to your provider.</p>`
+    },
+    {
+      id: 'pelvic-rest',
+      title: 'Pelvic Rest & Resuming Sex',
+      sub: 'Why the 6-week recommendation exists',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+      color: 'rose',
+      body: `
+        <p class="lead rose">ACOG recommends waiting at least 6 weeks after delivery before having vaginal intercourse. Here's why this guidance exists.</p>
+        <h4>Why 6 Weeks?</h4>
+        <ul>
+          <li>The uterus needs 4–6 weeks to fully contract and for the placental attachment site to heal completely</li>
+          <li>Any vaginal tears, lacerations, or episiotomy stitches need time to heal</li>
+          <li>C-section incisions — both the external scar and the uterine incision inside — need at least 6 weeks</li>
+          <li>The cervix, which was dilated to 10 cm, gradually closes over several weeks — during this time it provides a direct path for infection to reach the uterus</li>
+        </ul>
+        <h4>What "Pelvic Rest" Means</h4>
+        <p>Nothing in the vagina: no intercourse, no tampons, no menstrual cups, no douching. Use pads only for lochia during the healing period.</p>
+        <div class="callout rose">
+          <div class="callout-title">When You're Ready to Resume</div>
+          <p><strong>Dryness is very common</strong> — especially if breastfeeding, which keeps estrogen low. Use a water-based lubricant. Take your time; some initial discomfort is normal. Persistent pain is not — tell your provider. <strong>Use contraception</strong> — you can become pregnant before your period returns. Discuss options at your 6-week visit.</p>
+        </div>
+        <div class="callout gold">
+          <div class="callout-title">Contraception After Delivery</div>
+          <p>You can ovulate and get pregnant as early as 3 weeks postpartum, even while breastfeeding, and before your period returns. If you don't want to become pregnant immediately, discuss contraception before leaving the hospital or at your 2-week visit at the latest.</p>
+        </div>`
+    },
+    {
+      id: 'postpartum-exercise',
+      title: 'Returning to Exercise After Delivery',
+      sub: 'What\'s safe when, and pelvic floor PT',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>`,
+      color: 'rose',
+      body: `
+        <p class="lead rose">Getting active again after delivery improves mood, energy, and physical recovery — but the timeline matters.</p>
+        <h4>Start Immediately (Days 1–2)</h4>
+        <ul>
+          <li><strong>Kegel exercises</strong> — start within 24–48 hours if comfortable. These speed healing, reduce urinary leakage risk, and rebuild pelvic floor tone. 3 sets of 10 holds (5–10 seconds each), multiple times per day.</li>
+          <li><strong>Gentle walking</strong> — short walks are encouraged starting Day 1–2. Builds up as you feel ready.</li>
+          <li><strong>Deep belly breathing</strong> — inhale to expand the belly, exhale slowly. Helps reconnect with deep core muscles.</li>
+        </ul>
+        <h4>Weeks 2–6</h4>
+        <ul>
+          <li>Gradually increase walking duration and pace</li>
+          <li>Gentle stretching and mobility work is fine</li>
+          <li>Avoid: sit-ups, crunches, planks, heavy lifting, high-impact activities, anything that increases downward pressure on the pelvic floor</li>
+          <li>Listen to your body — increased pain, bleeding, or pelvic pressure means slow down</li>
+        </ul>
+        <h4>After 6-Week Clearance</h4>
+        <p>You can gradually return to your pre-pregnancy exercise activities. Start at 50% intensity and build slowly over weeks. Running, HIIT, and lifting can all resume — but start gently.</p>
+        <div class="callout rose">
+          <div class="callout-title">Diastasis Recti</div>
+          <p>A separation of the two sides of the rectus abdominis (the "six-pack" muscles) that's very common after pregnancy. Standard crunches and sit-ups can worsen it. A pelvic floor physical therapist can screen you and give you safe, effective exercises. Ask your provider for a referral.</p>
+        </div>
+        <div class="callout">
+          <div class="callout-title">Pelvic Floor Physical Therapy</div>
+          <p>An underused but highly effective resource after delivery. Treats urinary leakage, pelvic organ prolapse, pain with sex, diastasis recti, and general pelvic floor weakness. Ask for a referral at your 6-week visit — it's covered by most insurance.</p>
+        </div>`
+    },
+    {
+      id: 'postpartum-danger',
+      title: 'Postpartum Warning Signs & Follow-Up',
+      sub: 'When to call and your appointment schedule',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+      color: 'rose',
+      body: `
+        <div class="callout alert">
+          <div class="callout-title">Go to the ER or Call 911 For</div>
+          <p>Chest pain or difficulty breathing · Seizure · Sudden severe headache unlike any before · Stroke symptoms (face drooping, arm weakness, slurred speech) · Thoughts of harming yourself or your baby</p>
+        </div>
+        <div class="callout rose">
+          <div class="callout-title">Call Your OB / Midwife For</div>
+          <p>Fever &gt;100.4°F · Soaking more than 1 pad per hour for 2 hours · Severe headache not relieved by ibuprofen/Tylenol · Vision changes · Leg redness, swelling, or warmth (DVT) · Wound opening, redness spreading, or pus · Difficulty urinating · Signs of PPD or anxiety</p>
+        </div>
+        <h4>Your Postpartum Visit Schedule</h4>
+        <table class="data-table">
+          <tr><th class="rose">When</th><th class="rose">Purpose</th></tr>
+          <tr><td><strong>1–3 days</strong><br>(C-section or complications)</td><td>Wound check, blood pressure, pain management</td></tr>
+          <tr><td><strong>2 weeks</strong><br>(now recommended by ACOG)</td><td>Mood screening (Edinburgh Scale), BP, incision/perineum check, breastfeeding support</td></tr>
+          <tr><td><strong>6 weeks</strong></td><td>Full physical, pelvic exam, contraception, clearance for sex and exercise, thyroid check if indicated</td></tr>
+        </table>
+        <div class="callout">
+          <div class="callout-title">Questions to Ask at Your 6-Week Visit</div>
+          <p>Contraception · Pelvic floor PT referral · Return to full exercise · Diastasis recti screening · Sex concerns and dryness · Mood and PPD screening · Incision or perineal healing · Any other accumulated questions</p>
+        </div>`
+    },
+  ],
+
+  baby: [
+    {
+      id: 'breastfeeding',
+      title: 'Breastfeeding: Getting Started',
+      sub: 'Latch, colostrum, and how to know it\'s working',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0112 0v2"/></svg>`,
+      color: 'navy',
+      body: `
+        <p class="lead navy">Breastfeeding is natural but takes practice. Most challenges can be solved with good support. <strong>Ask for a lactation consultant before you leave the hospital — it's one of the most valuable resources available to you.</strong></p>
+        <h4>First 1–3 Days: Colostrum</h4>
+        <p>Your first "milk" is colostrum — thick, golden-yellow, and produced in small amounts (teaspoons, not ounces). This is exactly right. Colostrum is packed with antibodies, immune factors, and exactly what a newborn needs. Your mature milk comes in around days 2–5 (often slightly later after a C-section).</p>
+        <h4>The Latch — Most Important Thing</h4>
+        <ul>
+          <li>Baby's mouth should cover most of the areola, not just the nipple</li>
+          <li>Both lips should be flanged outward (not curled in)</li>
+          <li>You should hear swallowing sounds — a soft "kuh" — not clicking</li>
+          <li>Baby's nose and chin should both touch the breast</li>
+          <li>A good latch should not hurt after the first 20–30 seconds. If it hurts throughout, break suction with a clean finger and try again.</li>
+        </ul>
+        <h4>How Often to Feed</h4>
+        <p>8–12 times in 24 hours in the first weeks. Feed on demand — watch for hunger cues (rooting, hands to mouth, sucking movements, fussiness) rather than watching the clock. Newborns need to eat that often; it's not a sign you don't have enough milk.</p>
+        <div class="callout navy">
+          <div class="callout-title">How to Know Baby Is Getting Enough</div>
+          <p><strong>Diapers:</strong> By day 4–5, expect at least 6 wet diapers and 3–4 yellow seedy stools per day. <strong>Weight:</strong> Birth weight should be regained by 10–14 days. After day 5, expect ½–1 oz gain per day. <strong>Baby:</strong> Satisfied after feeds, alert during awake periods.</p>
+        </div>`
+    },
+    {
+      id: 'bf-challenges',
+      title: 'Breastfeeding Challenges & Solutions',
+      sub: 'Sore nipples, engorgement, supply concerns, mastitis',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`,
+      color: 'navy',
+      body: `
+        <table class="data-table">
+          <tr><th class="navy">Problem</th><th class="navy">What to Do</th></tr>
+          <tr><td><strong>Sore nipples</strong></td><td>Check latch first — this is the #1 cause. Apply expressed breast milk or lanolin after feeds. Air dry. Usually improves after day 5 once milk comes in and latch improves.</td></tr>
+          <tr><td><strong>Engorgement</strong></td><td>Feed or pump frequently (every 2–3 hrs). Warm compress before feeding to help letdown. Cold pack after feeding to reduce swelling. Can cause a low-grade fever — if &gt;100.4°F, call your provider.</td></tr>
+          <tr><td><strong>Low supply concerns</strong></td><td>Feed more frequently — supply follows demand. Ensure good latch. Pump after feeds to signal more production. See a lactation consultant. Most perceived low supply is actually sufficient supply.</td></tr>
+          <tr><td><strong>Clogged duct</strong></td><td>Firm, tender lump in breast. Massage toward the nipple during feeds. Warm compress before nursing. Frequent emptying of that breast. Usually resolves in 1–2 days.</td></tr>
+          <tr><td><strong>Mastitis</strong></td><td>Flu-like symptoms (fever, body aches, fatigue) + a red, painful area of breast. Keep breastfeeding — stopping makes it worse. Usually requires antibiotics — call your provider.</td></tr>
+          <tr><td><strong>Nipple thrush</strong></td><td>Sharp, burning pain during and after feeds. Pinkish, shiny nipples. Both you and baby need antifungal treatment at the same time. Call your provider and baby's pediatrician.</td></tr>
+        </table>
+        <div class="callout navy">
+          <div class="callout-title">Pumping</div>
+          <p>Electric double breast pumps are covered by most U.S. insurance plans under the ACA. Pumping maintains supply when baby can't nurse, allows others to feed baby, and builds a freezer stash. Milk can be refrigerated for 4 days or frozen 6–12 months.</p>
+        </div>
+        <div class="callout">
+          <div class="callout-title">It's Okay to Supplement or Formula Feed</div>
+          <p>If breastfeeding is not working despite support, supplementing with formula is not failure — it's feeding your baby. A fed, thriving baby matters most. Many families combine breast and formula feeding successfully.</p>
+        </div>`
+    },
+    {
+      id: 'formula',
+      title: 'Formula Feeding',
+      sub: 'Choosing, preparing, and storing formula safely',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>`,
+      color: 'navy',
+      body: `
+        <p class="lead navy">Formula is a safe and complete source of nutrition for your baby. The best feeding method is the one that keeps your baby nourished and your family well.</p>
+        <h4>Choosing a Formula</h4>
+        <ul>
+          <li>Standard cow's milk-based, iron-fortified formula is appropriate for most healthy term babies</li>
+          <li>Soy formula is appropriate for certain dietary or religious reasons</li>
+          <li>Hypoallergenic (hydrolyzed) formulas are for babies with confirmed milk protein allergy — don't switch without talking to your pediatrician</li>
+          <li>Don't change formula brands frequently hoping to solve normal fussiness — most switching doesn't help</li>
+        </ul>
+        <h4>Preparing Formula</h4>
+        <ul>
+          <li>Follow package instructions exactly — the ratio of powder to water is carefully designed</li>
+          <li>Use water that meets safe drinking standards. For babies under 2 months or immunocompromised, boil and cool tap water</li>
+          <li>To warm: place bottle in a bowl of warm water. <strong>Never microwave</strong> — heats unevenly and can burn baby's mouth</li>
+        </ul>
+        <h4>How Much, How Often</h4>
+        <ul>
+          <li>Newborn (0–1 month): 1–2 oz every 2–3 hours (8–12 feeds/day)</li>
+          <li>2 months: 3–4 oz every 3–4 hours</li>
+          <li>4 months: 4–6 oz every 4 hours</li>
+          <li>Feed on demand — these are guides, not rules</li>
+        </ul>
+        <table class="data-table">
+          <tr><th class="navy">Storage</th><th class="navy">How Long</th></tr>
+          <tr><td>Opened bottle (started)</td><td>Use within 1 hour or discard</td></tr>
+          <tr><td>Prepared but not started (fridge)</td><td>Up to 24 hours</td></tr>
+          <tr><td>Unmixed powder (sealed, room temp)</td><td>Follow package expiration</td></tr>
+        </table>
+        <div class="callout alert">
+          <div class="callout-title">Never</div>
+          <p>Give regular cow's milk before 12 months · Add cereal to a bottle · Dilute formula to make it last longer · Make formula stronger than directed · Use expired formula</p>
+        </div>`
+    },
+    {
+      id: 'cord-care',
+      title: 'Umbilical Cord Care',
+      sub: 'Keeping it clean, dry, and when to worry',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M12 22C12 22 3 15 3 9a9 9 0 0118 0c0 6-9 13-9 13z"/></svg>`,
+      color: 'navy',
+      body: `
+        <p class="lead navy">The umbilical cord stump dries up and falls off on its own in 1–3 weeks. Your main job is keeping it clean and dry.</p>
+        <h4>Normal Appearance Over Time</h4>
+        <ul>
+          <li>At birth: yellow-green, soft, and rubbery</li>
+          <li>Days 1–5: begins to dry, turns brown</li>
+          <li>Days 5–14: progressively shriveled and black</li>
+          <li>Falls off naturally — do not pull it, even when it looks like it's barely attached</li>
+        </ul>
+        <h4>How to Care for It</h4>
+        <ul>
+          <li><strong>Keep it dry:</strong> Sponge baths only until the stump falls off — no submersing in water</li>
+          <li><strong>Fold the diaper down</strong> to keep the stump exposed to air and prevent urine contact</li>
+          <li><strong>Loose, airy clothing</strong> — avoid onesies or clothes that rub the cord</li>
+          <li><strong>No alcohol wipes needed</strong> — studies show clean dry care heals just as well or faster. Your hospital may have a specific protocol; follow their guidance.</li>
+        </ul>
+        <h4>Normal Findings</h4>
+        <ul>
+          <li>Small amount of dried blood at the base as it separates — normal</li>
+          <li>Slight moisture or minimal clear discharge at the base — usually normal</li>
+          <li>A mild smell as it dries — generally normal</li>
+        </ul>
+        <div class="callout alert">
+          <div class="callout-title">Call the Pediatrician If</div>
+          <p><strong>Redness spreading on the surrounding skin</strong> — this is omphalitis (a skin infection) and needs prompt treatment · Foul or strong smell · Yellow or green pus · Bleeding that doesn't stop with gentle pressure · Stump still attached at 5–6 weeks without explanation</p>
+        </div>`
+    },
+    {
+      id: 'normal-newborn',
+      title: 'Normal Newborn Appearance & Behavior',
+      sub: 'What looks alarming but is totally normal',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>`,
+      color: 'navy',
+      body: `
+        <p class="lead navy">Many normal newborn features look alarming to new parents. Here's what to expect.</p>
+        <table class="data-table">
+          <tr><th class="navy">What You See</th><th class="navy">Normal?</th></tr>
+          <tr><td>Cone-shaped or molded head</td><td>✓ Yes — resolves in days</td></tr>
+          <tr><td>Soft spots (fontanelles) pulsating</td><td>✓ Yes — normal</td></tr>
+          <tr><td>Cheesy white coating (vernix)</td><td>✓ Yes — protective, let absorb</td></tr>
+          <tr><td>Fine hair on shoulders/back (lanugo)</td><td>✓ Yes — sheds in weeks</td></tr>
+          <tr><td>Yellow skin or eyes (jaundice)</td><td>Common — needs monitoring</td></tr>
+          <tr><td>Swollen breasts (girls or boys)</td><td>✓ Yes — maternal hormones</td></tr>
+          <tr><td>Swollen labia or scrotum</td><td>✓ Yes — maternal hormones</td></tr>
+          <tr><td>Girls: bloody or mucousy vaginal discharge</td><td>✓ Yes — hormone withdrawal</td></tr>
+          <tr><td>Crossed eyes occasionally</td><td>✓ Yes — normal until ~4 months</td></tr>
+          <tr><td>Peeling skin (day 1–3)</td><td>✓ Yes — especially post-term</td></tr>
+          <tr><td>Sneezing frequently</td><td>✓ Yes — not a cold</td></tr>
+          <tr><td>Hiccups constantly</td><td>✓ Yes — very normal</td></tr>
+          <tr><td>Pimple-like rash (erythema toxicum)</td><td>✓ Yes — harmless, resolves in days</td></tr>
+          <tr><td>Dark first stool (meconium)</td><td>✓ Yes — should pass within 24–48 hrs</td></tr>
+        </table>
+        <div class="callout alert">
+          <div class="callout-title">Call the Pediatrician Immediately For</div>
+          <p>Fever ≥ 100.4°F rectal (serious in newborns — always take rectal temp) · Refusing to eat · Extreme yellowing · Grunting with every breath · Blue lips or very pale skin · Inconsolable crying · Fewer than 6 wet diapers/day after day 5 · Stiff neck</p>
+        </div>`
+    },
+    {
+      id: 'safe-sleep',
+      title: 'Safe Sleep for Baby',
+      sub: 'The ABCs of SIDS prevention',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><path d="M2 17l10-11 10 11"/><path d="M4 15v6h16v-6"/></svg>`,
+      color: 'navy',
+      body: `
+        <p class="lead navy">Safe sleep practices prevent SIDS and sleep-related infant deaths, which cause about 3,500 infant deaths per year in the U.S. These guidelines save lives.</p>
+        <div class="callout navy">
+          <div class="callout-title">The ABCs of Safe Sleep</div>
+          <p><strong>A — Alone:</strong> Baby sleeps alone, not with adults, siblings, or pets<br><strong>B — Back:</strong> Always place baby on their back to sleep — every sleep, every caregiver<br><strong>C — Crib:</strong> On a firm, flat sleep surface with only a fitted sheet</p>
+        </div>
+        <h4>The Safe Sleep Environment</h4>
+        <ul>
+          <li>Firm, flat mattress in a crib, bassinet, or play yard that meets current CPSC safety standards</li>
+          <li><strong>Nothing else</strong> in the sleep area — no pillows, blankets, bumper pads, positioners, stuffed animals, or wedges</li>
+          <li><strong>Room-sharing</strong> (baby in the same room but not the same bed) for at least the first 6 months reduces SIDS risk by up to 50% — this is strongly recommended</li>
+          <li>Keep the sleep area smoke-free — exposure to tobacco smoke significantly increases risk</li>
+          <li><strong>Pacifier at sleep time</strong> reduces SIDS risk — offer after breastfeeding is established (~3–4 weeks)</li>
+          <li>Keep baby comfortably cool — overheating is a risk factor</li>
+        </ul>
+        <div class="callout gold">
+          <div class="callout-title">Tummy Time (Awake &amp; Supervised Only)</div>
+          <p>Tummy time while baby is awake and watched is essential for neck and shoulder development and preventing flat spots on the head. Start with 2–3 minutes several times a day from birth. Build to 30 total minutes per day by 3 months.</p>
+        </div>
+        <p>Never place a sleeping baby in a swing, car seat (outside the car), bouncy seat, or inclined sleeper for extended sleep — these are not safe sleep environments.</p>`
+    },
+    {
+      id: 'followup-appts',
+      title: 'Follow-Up Appointments for Baby & You',
+      sub: 'The schedule and what happens at each visit',
+      icon: `<svg viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+      color: 'navy',
+      body: `
+        <p class="lead navy">Before you leave the hospital, confirm these appointments are scheduled. Don't leave without them.</p>
+        <h4>For Baby (Pediatrician)</h4>
+        <table class="data-table">
+          <tr><th class="navy">When</th><th class="navy">Purpose</th></tr>
+          <tr><td><strong>2–5 days old</strong></td><td>Weight check — critical to confirm birth weight is being regained. Jaundice assessment. Feeding evaluation. Newborn screening follow-up.</td></tr>
+          <tr><td><strong>2 weeks</strong></td><td>Weight back to birth weight? Development and feeding check. Cord stump check.</td></tr>
+          <tr><td><strong>2 months</strong></td><td>First vaccines, growth and development milestones</td></tr>
+          <tr><td><strong>4, 6, 9, 12 months</strong></td><td>Growth, development, vaccines (schedule continues through childhood)</td></tr>
+        </table>
+        <h4>For You (OB/Midwife)</h4>
+        <table class="data-table">
+          <tr><th class="navy">When</th><th class="navy">Purpose</th></tr>
+          <tr><td><strong>1–3 days</strong> (C-section or complications)</td><td>Wound check, BP management, pain</td></tr>
+          <tr><td><strong>2 weeks</strong></td><td>Mood screening, BP, wound/perineum, breastfeeding support</td></tr>
+          <tr><td><strong>6 weeks</strong></td><td>Full physical, pelvic exam, contraception discussion, exercise clearance</td></tr>
+        </table>
+        <div class="callout navy">
+          <div class="callout-title">Questions to Ask Before Leaving the Hospital</div>
+          <p>Who do I call if I have a question before my first appointment? · Is baby feeding well — how will I know if not? · What's my threshold for calling the pediatrician? · Were any tests abnormal that need follow-up? · Do I need to wake baby to feed at night? · What are my wound care instructions?</p>
+        </div>`
+    },
+  ],
+
+  faq: [
+    {
+      id: 'faq-deli',
+      title: 'Can I eat deli meat and soft cheese?',
+      type: 'myth',
+      body: `<p>The main risk is <em>Listeria</em>, a bacterial infection that's rare but can be serious in pregnancy (can cross the placenta). The FDA advises avoiding unpasteurized cheese and deli meats unless heated to steaming (165°F). Most pasteurized soft cheeses (like pasteurized brie, feta from a package) are safe. The overall risk from occasional deli meat is very low — this guidance is precautionary, not a guarantee of illness from a turkey sandwich. When in doubt, heat it.</p>`
+    },
+    {
+      id: 'faq-coffee',
+      title: 'Can I have any caffeine?',
+      type: 'myth',
+      body: `<p>Yes. ACOG recommends limiting caffeine to <strong>less than 200 mg per day</strong> (approximately one 12-oz cup of drip coffee). At that level, evidence of harm to the pregnancy is not established. Tea, soda, and chocolate also contain caffeine — count them all together. Cutting back is reasonable; cutting it out entirely is a personal choice, not medically required.</p>`
+    },
+    {
+      id: 'faq-hair-dye',
+      title: 'Can I dye my hair while pregnant?',
+      type: 'myth',
+      body: `<p>Yes. Hair dye is absorbed through the scalp in very small amounts. No published studies have shown harm to the fetus at the amounts involved in normal salon or home hair coloring. Most providers consider it safe, especially after the first trimester. Highlights (foil) have even less scalp contact. If you're concerned, wait until the second trimester when major organ development is complete.</p>`
+    },
+    {
+      id: 'faq-exercise-mc',
+      title: 'Does exercise cause miscarriage?',
+      type: 'myth',
+      body: `<p>No. Moderate exercise does not cause miscarriage in healthy pregnancies. This is one of the most pervasive myths in pregnancy. Early miscarriages are almost always caused by chromosomal abnormalities in the embryo — not by exercise, sex, stress, or anything the mother did. Exercise is protective, not harmful. See the exercise guidelines in the Prenatal section.</p>`
+    },
+    {
+      id: 'faq-sex-pregnancy',
+      title: 'Is it safe to have sex during pregnancy?',
+      type: 'faq',
+      body: `<p>Yes, in a normal pregnancy without complications. Sex does not cause miscarriage, early labor, or harm the baby (who is cushioned by amniotic fluid). Your provider will recommend pelvic rest (no intercourse) only if you have specific situations: placenta previa, preterm labor risk, unexplained vaginal bleeding, certain cervical conditions, or after your water has broken. If you're not sure, ask at your next visit.</p>`
+    },
+    {
+      id: 'faq-vaccines',
+      title: 'Are vaccines safe during pregnancy?',
+      type: 'faq',
+      body: `<p>Yes, and some are strongly recommended. <strong>Tdap</strong> (whooping cough booster, 27–36 weeks) and the <strong>flu vaccine</strong> are recommended at every pregnancy. The <strong>COVID-19 vaccine</strong> is also recommended. These protect you from serious illness and transfer antibodies to your baby through the placenta, protecting them before they can be vaccinated. Live-virus vaccines (MMR, chickenpox) are not given during pregnancy. Ask your provider which you still need.</p>`
+    },
+    {
+      id: 'faq-eat-for-two',
+      title: 'Do I need to "eat for two"?',
+      type: 'myth',
+      body: `<p>No — "eating for two" is a myth. In the first trimester, extra calorie needs are minimal. By the third trimester, you need roughly 300 extra calories per day (about a glass of milk and a banana). Quality of nutrition matters far more than quantity. Focus on protein, iron, folate, calcium, and omega-3 fatty acids. Your prenatal vitamin helps fill gaps but shouldn't replace a balanced diet.</p>`
+    },
+    {
+      id: 'faq-hot-tub',
+      title: 'Can I take baths or use a hot tub?',
+      type: 'faq',
+      body: `<p>Warm baths are fine throughout pregnancy. Hot tubs, saunas, and steam rooms that raise your core body temperature above 102°F (39°C) are not recommended — especially in the first trimester, when elevated temperature is associated with neural tube defects. If you do use a hot tub, keep the temperature comfortable (not hot), limit time to 10 minutes, and avoid it in the first trimester. A warm bath at typical household water temperature (98–100°F) is safe.</p>`
+    },
+    {
+      id: 'faq-epidural-csec',
+      title: 'Does an epidural increase C-section risk?',
+      type: 'myth',
+      body: `<p>No. This is one of the most studied questions in obstetrics. Multiple large randomized controlled trials and meta-analyses confirm that epidurals do <strong>not</strong> increase C-section rates. Epidurals may slightly lengthen the pushing stage, but this is managed safely with patience and nurse guidance. You can request an epidural at any point in active labor — there is no "too early" or "too late" threshold.</p>`
+    },
+    {
+      id: 'faq-routine-episiotomy',
+      title: 'Do I need an episiotomy to avoid tearing?',
+      type: 'myth',
+      body: `<p>No. Routine episiotomy (a surgical cut at the vaginal opening) is no longer recommended by ACOG. Evidence consistently shows that <strong>natural tears generally heal better</strong> and cause fewer complications (including pain and long-term pelvic floor issues) than routine episiotomies. Most women who deliver vaginally have some degree of tearing, but many are minor (first-degree). Episiotomy is still appropriate when there is a specific indication — such as when baby needs to be delivered quickly for fetal distress.</p>`
+    },
+    {
+      id: 'faq-water-breaking',
+      title: 'If my water breaks, do I have to have a C-section?',
+      type: 'myth',
+      body: `<p>No. If your membranes rupture (water breaks) at term, most women go into labor on their own within 12 hours. If labor doesn't start, induction is offered to reduce infection risk — the guideline is to complete delivery within 18–24 hours. If you are GBS-positive, antibiotics are started immediately. A C-section is only needed if there are other indications — water breaking alone is not one of them.</p>`
+    },
+    {
+      id: 'faq-eat-in-labor',
+      title: 'Can I eat or drink during labor?',
+      type: 'faq',
+      body: `<p>For low-risk women in early labor, current ACOG guidance supports light food and clear liquids. Once you have an epidural, are on Pitocin, or are higher risk for needing general anesthesia (possible C-section), most hospitals restrict to ice chips or sips of water due to aspiration risk if general anesthesia becomes necessary. Ask your hospital's specific policy. For your support person: bring snacks. Labor can be a long day.</p>`
+    },
+    {
+      id: 'faq-vbac',
+      title: 'If I had a C-section before, do I always need another one?',
+      type: 'faq',
+      body: `<p>Not necessarily. Vaginal birth after cesarean (VBAC) is a safe and appropriate option for many women with one prior low-transverse uterine incision. Success rates range from 60–80%. Factors that affect candidacy include the reason for the prior C-section, your current pregnancy, the type of uterine incision, and your hospital's capacity to handle an emergency. Bring this up early in prenatal care if you are interested.</p>`
+    },
+    {
+      id: 'faq-bf-bc',
+      title: 'Can I get pregnant while breastfeeding?',
+      type: 'myth',
+      body: `<p>Yes. While exclusive breastfeeding suppresses ovulation to some degree, it is <strong>not reliable contraception</strong>. You can ovulate — and get pregnant — before your period returns. The "lactational amenorrhea method" requires very specific conditions (exclusive breastfeeding every 4 hours daytime / 6 hours nighttime, no supplementation, no period returned) and is only about 98% effective under those strict conditions. Discuss birth control before you leave the hospital.</p>`
+    },
+    {
+      id: 'faq-stress-milk',
+      title: 'Does stress dry up breast milk?',
+      type: 'myth',
+      body: `<p>Acute stress can temporarily interfere with the letdown reflex (the release of milk), but it does not affect milk production long-term. Milk supply is driven by demand — the more frequently and effectively your baby nurses or you pump, the more milk your body produces. Strategies that help letdown: skin-to-skin contact, warmth, relaxation techniques, and looking at a photo of your baby when pumping.</p>`
+    },
+    {
+      id: 'faq-bonding',
+      title: 'Should I feel instantly bonded with my baby?',
+      type: 'myth',
+      body: `<p>No — bonding is a process, not a single moment. Many mothers feel deep love immediately at birth; others need days, weeks, or longer to develop that feeling. Both are completely normal. Physical exhaustion, difficult deliveries, unexpected outcomes, and PPD can all affect early bonding. If you feel disconnected or numb toward your baby for more than a couple of weeks, mention it to your provider — it can be a sign of postpartum depression, which is treatable.</p>`
+    },
+    {
+      id: 'faq-ibuprofen-bf',
+      title: 'Can I take ibuprofen while breastfeeding?',
+      type: 'faq',
+      body: `<p>Yes. Ibuprofen is one of the safest OTC medications while breastfeeding — very little transfers to breast milk. Acetaminophen (Tylenol) is also safe. These are the preferred pain medications postpartum and during breastfeeding. High-dose aspirin is not recommended (low-dose prescribed aspirin is a different matter — discuss with your provider). Naproxen (Aleve) has more milk transfer and is generally not preferred. Always confirm with your care team for your specific situation.</p>`
+    },
+    {
+      id: 'faq-jaundice',
+      title: 'My baby looks yellow — when is it serious?',
+      type: 'faq',
+      body: `<p>Newborn jaundice (hyperbilirubinemia) affects about 60% of term babies in the first week. It's caused by normal breakdown of fetal red blood cells — the liver is just catching up. Most cases are mild and resolve without treatment. It becomes a concern when bilirubin levels are very high (risk of brain damage at extreme levels) or when baby is very sleepy, not feeding, or the jaundice appears in the first 24 hours. Your hospital will check bilirubin before discharge and at the 2–5 day pediatrician visit. Treatment with phototherapy (bili lights) is very effective if needed.</p>`
+    },
+    {
+      id: 'faq-newborn-procedures',
+      title: 'Do all newborn procedures have to happen?',
+      type: 'faq',
+      body: `<p>Standard newborn procedures include: <strong>Vitamin K injection</strong> (prevents serious bleeding disorder — VKDB — that can cause fatal brain bleeding), <strong>erythromycin eye ointment</strong> (prevents eye infections including gonorrhea), <strong>Hepatitis B vaccine first dose</strong>, and the <strong>newborn metabolic screening blood draw</strong> (heel stick for ~30 conditions including PKU, hypothyroidism, sickle cell). All are recommended because the risks of the conditions prevented far outweigh the risks of the procedures. You may legally decline them in most states, but discuss the risks honestly with your provider first.</p>`
+    },
+    {
+      id: 'faq-first-bath',
+      title: 'When does my baby need the first bath?',
+      type: 'faq',
+      body: `<p>WHO and AAP now recommend delaying the first bath for at least 24 hours after birth (ideally 48 hours). The white coating (vernix caseosa) has antimicrobial properties and helps moisturize skin. Delaying the bath also helps maintain body temperature, supports blood sugar stability, and is associated with improved breastfeeding initiation. Waiting is the current best practice, not just preference.</p>`
+    },
+  ],
+};
+
+// ═══════════════════════════════════════════════════════
+// CONTACTS & DETAILS CONFIG
+// ═══════════════════════════════════════════════════════
+const CONTACTS = [
+  { id: 'ob', label: 'OB / Midwife', hasName: true, hasPhone: true },
+  { id: 'peds', label: 'Pediatrician', hasName: true, hasPhone: true },
+  { id: 'mfm', label: 'MFM Specialist', hasName: true, hasPhone: true },
+  { id: 'lactation', label: 'Lactation Consultant', hasName: true, hasPhone: true },
+  { id: 'ld', label: 'Hospital / L&D Triage', hasName: false, hasPhone: true },
+  { id: 'pharmacy', label: 'Pharmacy', hasName: true, hasPhone: true },
+];
+
+const DETAILS = [
+  { id: 'edd', label: 'Due Date (EDD)', placeholder: 'e.g. July 15, 2026', type: 'text' },
+  { id: 'bloodtype', label: 'Blood Type & Rh Factor', placeholder: 'e.g. O positive', type: 'text' },
+  { id: 'gbs', label: 'GBS Status', placeholder: 'Positive / Negative / Not yet tested', type: 'text' },
+  { id: 'allergies', label: 'Medication Allergies', placeholder: 'e.g. Penicillin', type: 'text' },
+  { id: 'insurance', label: 'Insurance / Member ID', placeholder: 'For quick reference at hospital', type: 'text' },
+];
+
+// ═══════════════════════════════════════════════════════
+// SEARCH INDEX
+// ═══════════════════════════════════════════════════════
+const SEARCH_INDEX = [];
+const SECTION_META = {
+  pregnancy: { label: 'Prenatal', color: '' },
+  labor:     { label: 'Labor & Delivery', color: 'gold' },
+  recovery:  { label: 'Recovery', color: 'rose' },
+  baby:      { label: 'Newborn', color: 'navy' },
+  faq:       { label: 'FAQ', color: 'plum' },
+};
+
+function buildSearchIndex() {
+  for (const [section, items] of Object.entries(CONTENT)) {
+    items.forEach(item => {
+      const plainBody = item.body.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+      SEARCH_INDEX.push({
+        section,
+        id: item.id,
+        title: item.title,
+        sub: item.sub || '',
+        body: plainBody,
+        bodyLower: plainBody.toLowerCase(),
+        titleLower: item.title.toLowerCase(),
+      });
+    });
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDER CARDS
+// ═══════════════════════════════════════════════════════
+function renderSection(section) {
+  const container = document.getElementById('cards-' + section);
+  if (!container || container.dataset.rendered) return;
+
+  const items = CONTENT[section];
+  items.forEach(item => {
+    const isFaq = section === 'faq';
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = 'card-' + item.id;
+
+    if (isFaq) {
+      const badge = item.type === 'myth'
+        ? '<span class="faq-badge badge-myth">Myth</span>'
+        : '<span class="faq-badge badge-faq">FAQ</span>';
+      card.innerHTML = `
+        <div class="faq-header acc-header" onclick="toggleCard(this)">
+          ${badge}
+          <span class="faq-q">${item.title}</span>
+          <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="acc-body">${item.body}</div>`;
+    } else {
+      card.innerHTML = `
+        <div class="acc-header" onclick="toggleCard(this)">
+          <div class="acc-icon-wrap ${item.color || ''}">${item.icon}</div>
+          <div class="acc-titles">
+            <div class="acc-title">${item.title}</div>
+            ${item.sub ? `<div class="acc-sub">${item.sub}</div>` : ''}
+          </div>
+          <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="acc-body">${item.body}</div>`;
+    }
+
+    container.appendChild(card);
+  });
+  container.dataset.rendered = 'true';
+}
+
+function toggleCard(header) {
+  const card = header.closest('.card');
+  card.classList.toggle('open');
+  if (card.classList.contains('open')) {
+    // Smooth scroll into view with small delay
+    setTimeout(() => {
+      const rect = card.getBoundingClientRect();
+      const headerH = document.getElementById('header').offsetHeight;
+      if (rect.top < headerH + 8) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 50);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════
+let currentSection = 'home';
+
+function navigate(section) {
+  // Clear search
+  if (document.getElementById('search-input').value) {
+    clearSearch();
+  }
+
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+  // Show target
+  const page = document.getElementById('page-' + section);
+  if (page) {
+    page.classList.add('active');
+    page.scrollTop = 0;
+  }
+  const btn = document.getElementById('navbtn-' + section);
+  if (btn) btn.classList.add('active');
+
+  currentSection = section;
+
+  // Render content lazily
+  if (['pregnancy','labor','recovery','baby','faq'].includes(section)) {
+    renderSection(section);
+  }
+
+  // Update header sub
+  const subtitles = {
+    home: 'Evidence-based · Works offline',
+    pregnancy: 'Prenatal Visits & Pregnancy',
+    labor: 'Labor & Delivery',
+    recovery: 'Postpartum Recovery',
+    baby: 'Your Newborn',
+    faq: 'FAQ & Myths',
+    myinfo: 'My Care Team & Contacts',
+  };
+  document.getElementById('header-sub').textContent = subtitles[section] || '';
+
+  // Scroll content to top
+  document.getElementById('content').scrollTop = 0;
+}
+
+// ═══════════════════════════════════════════════════════
+// SEARCH
+// ═══════════════════════════════════════════════════════
+const searchInput = document.getElementById('search-input');
+const searchClear = document.getElementById('search-clear');
+const searchResultsPage = document.getElementById('search-results-page');
+const searchResultsList = document.getElementById('search-results-list');
+const searchResultsHeader = document.getElementById('search-results-header');
+const contentEl = document.getElementById('content');
+
+let searchDebounce;
+
+searchInput.addEventListener('input', () => {
+  clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(doSearch, 200);
+});
+
+function doSearch() {
+  const q = searchInput.value.trim();
+  if (!q) {
+    clearSearch();
+    return;
+  }
+
+  searchClear.classList.add('visible');
+  const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+
+  const results = SEARCH_INDEX.filter(item => {
+    return terms.every(t => item.titleLower.includes(t) || item.bodyLower.includes(t));
+  }).slice(0, 20);
+
+  // Show search results, hide normal pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  searchResultsPage.classList.add('active');
+
+  searchResultsHeader.textContent = results.length
+    ? `${results.length} result${results.length !== 1 ? 's' : ''} for "${q}"`
+    : '';
+
+  if (results.length === 0) {
+    searchResultsList.innerHTML = `<div class="no-results"><strong>No results found</strong>Try different keywords — like "epidural", "cord care", or "bleeding"</div>`;
+    return;
+  }
+
+  searchResultsList.innerHTML = '';
+  results.forEach(item => {
+    const meta = SECTION_META[item.section];
+    // Find a snippet around the first match
+    const firstTerm = terms[0];
+    let snippet = item.body;
+    const idx = item.bodyLower.indexOf(firstTerm);
+    if (idx > -1) {
+      const start = Math.max(0, idx - 60);
+      const end = Math.min(item.body.length, idx + firstTerm.length + 100);
+      snippet = (start > 0 ? '…' : '') + item.body.slice(start, end) + (end < item.body.length ? '…' : '');
+    } else {
+      snippet = item.body.slice(0, 120) + '…';
+    }
+
+    // Highlight terms
+    let highlighted = snippet;
+    terms.forEach(t => {
+      const re = new RegExp(`(${t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+      highlighted = highlighted.replace(re, '<em>$1</em>');
+    });
+
+    const div = document.createElement('div');
+    div.className = 'search-result-item';
+    div.innerHTML = `
+      <div class="sri-section ${meta.color}">${meta.label}</div>
+      <div class="sri-title">${item.title}</div>
+      <div class="sri-snippet">${highlighted}</div>`;
+    div.addEventListener('click', () => {
+      clearSearch();
+      navigate(item.section);
+      renderSection(item.section);
+      setTimeout(() => {
+        const card = document.getElementById('card-' + item.id);
+        if (card) {
+          card.classList.add('open');
+          card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    });
+    searchResultsList.appendChild(div);
+  });
+}
+
+function clearSearch() {
+  searchInput.value = '';
+  searchClear.classList.remove('visible');
+  searchResultsPage.classList.remove('active');
+  document.getElementById('page-' + currentSection)?.classList.add('active');
+  document.getElementById('navbtn-' + currentSection)?.classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════════
+// MY INFO — RENDER FORM
+// ═══════════════════════════════════════════════════════
+function renderMyInfo() {
+  const saved = JSON.parse(localStorage.getItem('birth-guide-info') || '{}');
+
+  // Contacts
+  const cForm = document.getElementById('contacts-form');
+  CONTACTS.forEach(c => {
+    const row = document.createElement('div');
+    row.className = 'contact-row';
+    const nameVal = saved[c.id + '_name'] || '';
+    const phoneVal = saved[c.id + '_phone'] || '';
+
+    row.innerHTML = `
+      <div class="contact-row-label">${c.label}</div>
+      <div class="contact-fields">
+        ${c.hasName ? `<input class="contact-input" id="ci_${c.id}_name" type="text" placeholder="Name" value="${escHtml(nameVal)}">` : ''}
+        <div class="contact-field-wrap">
+          <input class="contact-input" id="ci_${c.id}_phone" type="tel" placeholder="Phone number" value="${escHtml(phoneVal)}" inputmode="tel">
+          <button class="action-btn call-btn" onclick="callContact('${c.id}')" title="Call" ${!phoneVal ? 'disabled' : ''}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 9.91a16 16 0 006.16 6.16l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          </button>
+          <button class="action-btn text-btn" onclick="textContact('${c.id}')" title="Text" ${!phoneVal ? 'disabled' : ''}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          </button>
+        </div>
+      </div>`;
+
+    // Update buttons when phone changes
+    const phoneInput = row.querySelector(`#ci_${c.id}_phone`);
+    const callBtn = row.querySelector('.call-btn');
+    const textBtn = row.querySelector('.text-btn');
+    phoneInput.addEventListener('input', () => {
+      const has = !!phoneInput.value.trim();
+      callBtn.disabled = !has;
+      textBtn.disabled = !has;
+    });
+
+    cForm.appendChild(row);
+  });
+
+  // Details
+  const dForm = document.getElementById('details-form');
+  DETAILS.forEach(d => {
+    const row = document.createElement('div');
+    row.className = 'contact-row';
+    const val = saved[d.id] || '';
+    row.innerHTML = `
+      <div class="contact-row-label">${d.label}</div>
+      <input class="contact-input" id="di_${d.id}" type="${d.type}" placeholder="${d.placeholder}" value="${escHtml(val)}">`;
+    dForm.appendChild(row);
+  });
+
+  // Notes
+  document.getElementById('notes-field').value = saved['notes'] || '';
+}
+
+function escHtml(s) {
+  return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function callContact(id) {
+  const phone = document.getElementById('ci_' + id + '_phone').value.trim().replace(/\s/g,'');
+  if (phone) window.location.href = 'tel:' + phone;
+}
+
+function textContact(id) {
+  const phone = document.getElementById('ci_' + id + '_phone').value.trim().replace(/\s/g,'');
+  if (phone) window.location.href = 'sms:' + phone;
+}
+
+function saveInfo() {
+  const data = {};
+  CONTACTS.forEach(c => {
+    const n = document.getElementById('ci_' + c.id + '_name');
+    const p = document.getElementById('ci_' + c.id + '_phone');
+    if (n) data[c.id + '_name'] = n.value.trim();
+    if (p) data[c.id + '_phone'] = p.value.trim();
+  });
+  DETAILS.forEach(d => {
+    const el = document.getElementById('di_' + d.id);
+    if (el) data[d.id] = el.value.trim();
+  });
+  data['notes'] = document.getElementById('notes-field').value;
+
+  localStorage.setItem('birth-guide-info', JSON.stringify(data));
+
+  const btn = document.getElementById('save-btn');
+  btn.textContent = '✓ Saved!';
+  btn.classList.add('saved');
+  showToast('Contacts saved to your phone');
+  setTimeout(() => {
+    btn.textContent = 'Save My Information';
+    btn.classList.remove('saved');
+  }, 2500);
+}
+
+// ═══════════════════════════════════════════════════════
+// PWA INSTALL
+// ═══════════════════════════════════════════════════════
+let deferredInstallPrompt = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  document.getElementById('install-btn').classList.add('visible');
+});
+
+function installPWA() {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  deferredInstallPrompt.userChoice.then(() => {
+    deferredInstallPrompt = null;
+    document.getElementById('install-btn').classList.remove('visible');
+  });
+}
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('install-btn').classList.remove('visible');
+  showToast('App installed! Open from your home screen anytime');
+});
+
+// ═══════════════════════════════════════════════════════
+// OFFLINE DETECTION
+// ═══════════════════════════════════════════════════════
+function updateOnlineStatus() {
+  document.getElementById('offline-banner').classList.toggle('visible', !navigator.onLine);
+}
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+
+// ═══════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════
+function showToast(msg, duration = 2500) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+// ═══════════════════════════════════════════════════════
+// SERVICE WORKER
+// ═══════════════════════════════════════════════════════
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').then(reg => {
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            showToast('App updated — reload for latest version', 4000);
+          }
+        });
+      });
+    }).catch(console.error);
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  buildSearchIndex();
+  renderMyInfo();
+  updateOnlineStatus();
+});
+</script>
+</body>
+</html>
