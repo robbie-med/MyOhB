@@ -1,32 +1,31 @@
-const CACHE_NAME = 'birth-guide-v1';
+const CACHE_NAME = 'birth-guide-v2';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  'https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600;700&display=swap'
+  './styles.css',
+  './content.js',
+  './tools.js',
 ];
 
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      // Cache app shell; font may fail in offline install, that's ok
-      return cache.addAll(['./index.html', './manifest.json']).then(() => {
-        return cache.add('./').catch(() => {});
-      });
-    }).then(() => self.skipWaiting())
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(ASSETS))
+      .then(() => self.skipWaiting())
   );
 });
 
 self.addEventListener('activate', e => {
   e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    ).then(() => self.clients.claim())
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))))
+      .then(() => self.clients.claim())
   );
 });
 
 self.addEventListener('fetch', e => {
-  // Network-first for Google Fonts (so they update), cache-first for everything else
+  // Network-first for Google Fonts; cache-first for everything else
   if (e.request.url.includes('fonts.g')) {
     e.respondWith(
       fetch(e.request).then(res => {
