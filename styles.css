@@ -768,10 +768,13 @@ body {
   padding: 16px;
   position: sticky;
   bottom: calc(var(--nav-h) + var(--safe-bottom));
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 #save-btn {
-  width: 100%;
+  flex: 1;
   padding: 14px;
   background: var(--teal);
   color: white;
@@ -1357,3 +1360,58 @@ strong { font-weight: 600; }
 .range-bar-wrap { height: 8px; background: var(--rule); border-radius: 4px; position: relative; margin: 8px 0; overflow: hidden; }
 .range-bar-fill { position: absolute; top: 0; bottom: 0; background: var(--teal); border-radius: 4px; }
 .range-bar-dot { position: absolute; top: 50%; width: 14px; height: 14px; background: var(--rose); border-radius: 50%; transform: translate(-50%, -50%); border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,.3); }
+
+/* ─── DARK MODE TOGGLE BUTTON ─── */
+#theme-btn { display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); color: white; border-radius: 50%; cursor: pointer; flex-shrink: 0; transition: background .2s; -webkit-tap-highlight-color: transparent; }
+#theme-btn:active { background: rgba(255,255,255,0.32); }
+
+/* ─── EXPORT BUTTON IN SAVE BAR ─── */
+#export-btn { padding: 14px 16px; background: var(--teal-faint); color: var(--teal); border: 1.5px solid var(--teal); border-radius: var(--radius); font-family: var(--font-sans); font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: background .2s; -webkit-tap-highlight-color: transparent; }
+#export-btn:active { background: var(--teal-light); }
+
+/* ─── DARK MODE ─── */
+body.dark { --bg: #111c1c; --white: #192828; --ink: #ddeaea; --ink-mid: #a8c0c0; --ink-soft: #6a8888; --rule: #253535; --teal-light: #182e2e; --teal-faint: #121f1f; --rose-light: #261616; --gold-light: #221800; --navy-light: #111c30; --plum-light: #1c1028; --card-shadow: 0 1px 4px rgba(0,0,0,.5), 0 4px 14px rgba(0,0,0,.4); }
+body.dark .callout { background: #1a2b2b !important; border-color: #2a4040 !important; }
+body.dark .callout.alert, body.dark .callout.rose { background: #280e0e !important; border-color: #4a1818 !important; }
+body.dark .callout.gold { background: #221800 !important; border-color: #3a2800 !important; }
+body.dark .callout.navy { background: #0f1825 !important; border-color: #1a2e45 !important; }
+body.dark .callout.plum { background: #180f22 !important; border-color: #2c1845 !important; }
+body.dark .qref-header { background: #220e0e; border-color: #381818; }
+body.dark .bpb-pill { background: var(--white); border-color: var(--rule); color: var(--ink); }
+body.dark .bpb-pill.selected { border-color: var(--teal); color: var(--teal); background: var(--teal-faint); }
+body.dark .choice-pill { background: var(--white); border-color: var(--rule); color: var(--ink-soft); }
+body.dark .choice-pill.selected { border-color: var(--teal); color: var(--teal); background: var(--teal-faint); }
+body.dark #nav { background: var(--white); border-top-color: var(--rule); }
+body.dark .tool-input, body.dark .tool-textarea { background: var(--white); border-color: var(--rule); color: var(--ink); }
+body.dark .modal-sheet { background: var(--white); }
+body.dark select { background: var(--white); border-color: var(--rule); color: var(--ink); }
+body.dark .section-tab { background: var(--white); }
+body.dark .section-tab.active { background: var(--teal-faint); }
+body.dark .appt-card { background: var(--white); }
+body.dark .birth-plan-output { background: var(--white); }
+body.dark .myinfo-save-bar { background: var(--white); border-top: 1px solid var(--rule); }
+body.dark #export-btn { background: var(--teal-faint); border-color: var(--teal); color: var(--teal); }
+body.dark .bp-notes-area { background: var(--white); border-color: var(--rule); color: var(--ink); }
+body.dark .score-result-card { background: #1a1a1a; }
+
+/* ─── PRINT VIEW ─── */
+#print-view { display: none; }
+
+@media print {
+  #app { display: none !important; }
+  #print-view {
+    display: block !important;
+    font-family: Georgia, serif;
+    color: #111;
+    padding: 20px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  #print-view h1 { font-size: 22px; margin-bottom: 4px; }
+  #print-view .pv-meta { font-size: 12px; color: #666; margin-bottom: 20px; }
+  #print-view .pv-row { display: flex; border-bottom: 1px solid #ddd; padding: 8px 0; }
+  #print-view .pv-q { flex: 0 0 45%; font-weight: 600; font-size: 13px; }
+  #print-view .pv-a { flex: 1; font-size: 13px; }
+  #print-view .pv-notes { margin-top: 20px; font-size: 13px; white-space: pre-wrap; border-top: 2px solid #111; padding-top: 12px; }
+  #print-view .pv-footer { margin-top: 20px; font-size: 11px; color: #999; }
+}

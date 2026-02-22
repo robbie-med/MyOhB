@@ -1297,6 +1297,60 @@ function showToast(msg, duration = 2500) {
 }
 
 // ═══════════════════════════════════════════════════════
+// DARK MODE
+// ═══════════════════════════════════════════════════════
+function initDarkMode() {
+  const saved = localStorage.getItem('dark-mode');
+  if (saved === '1' || (saved === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.body.classList.add('dark');
+  }
+  updateThemeIcon();
+}
+
+function toggleDarkMode() {
+  const isDark = document.body.classList.toggle('dark');
+  localStorage.setItem('dark-mode', isDark ? '1' : '0');
+  updateThemeIcon();
+}
+
+function updateThemeIcon() {
+  const icon = document.getElementById('theme-icon');
+  if (!icon) return;
+  const isDark = document.body.classList.contains('dark');
+  if (isDark) {
+    icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor" stroke="none"/>';
+  } else {
+    icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// DATA EXPORT
+// ═══════════════════════════════════════════════════════
+function exportData() {
+  const keys = [
+    'birth-guide-info', 'kick-history', 'contractions', 'feed-log',
+    'diaper-log', 'jaundice-birth-date', 'bp-log', 'weight-log',
+    'weight-profile', 'epds-history', 'birth-plan', 'birth-plan-notes', 'appt-notes',
+  ];
+  const data = {};
+  keys.forEach(k => {
+    const v = localStorage.getItem(k);
+    if (v !== null) {
+      try { data[k] = JSON.parse(v); } catch { data[k] = v; }
+    }
+  });
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'birth-guide-' + new Date().toISOString().split('T')[0] + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Data exported!');
+}
+
+// ═══════════════════════════════════════════════════════
 // SERVICE WORKER
 // ═══════════════════════════════════════════════════════
 if ('serviceWorker' in navigator) {
@@ -1321,4 +1375,5 @@ document.addEventListener('DOMContentLoaded', () => {
   buildSearchIndex();
   renderMyInfo();
   updateOnlineStatus();
+  initDarkMode();
 });

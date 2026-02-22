@@ -937,7 +937,7 @@ const BIRTH_PLAN_QUESTIONS = [
   { key: 'photos', q: 'Photography during delivery', opts: ['Yes please', 'No photos during delivery', 'Photos after delivery only'] },
   { key: 'visitors', q: 'Visitors during labor', opts: ['Support person only', 'Close family welcome', 'No visitors'] },
   { key: 'breastfeed', q: 'Feeding plan', opts: ['Breastfeed exclusively', 'Breastfeed + supplement', 'Formula only', 'Not sure yet'] },
-  { key: 'csection', q: 'If C-section needed', opts: ['Low screen (see baby)', 'Support person in OR', 'Skin-to-skin in OR if possible', 'Standard practice is fine'] },
+  { key: 'csection', q: 'If C-section needed', multi: true, opts: ['Low screen (see baby)', 'Support person in OR', 'Skin-to-skin in OR if possible', 'Standard practice is fine'] },
   { key: 'music', q: 'Atmosphere', opts: ['Music / own playlist', 'Quiet environment', 'No preference'] },
 ];
 
@@ -959,11 +959,15 @@ function initBirthPlan() {
         <div class="bpb-question">
           <div class="bpb-q-text">${q.q}</div>
           <div class="bpb-options">
-            ${q.opts.map(opt => `
-              <button class="bpb-pill ${birthPlanAnswers[q.key] === opt ? 'selected' : ''}"
-                onclick="setBPBAnswer('${q.key}', '${opt.replace(/'/g,"\\'")}', this)">
+            ${q.opts.map(opt => {
+              const isSelected = q.multi
+                ? Array.isArray(birthPlanAnswers[q.key]) && birthPlanAnswers[q.key].includes(opt)
+                : birthPlanAnswers[q.key] === opt;
+              return `<button class="bpb-pill ${isSelected ? 'selected' : ''}"
+                onclick="setBPBAnswer('${q.key}', '${opt.replace(/'/g,"\\'")}', this, ${!!q.multi})">
                 ${opt}
-              </button>`).join('')}
+              </button>`;
+            }).join('')}
           </div>
         </div>`).join('')}
     </div>
@@ -973,31 +977,54 @@ function initBirthPlan() {
     <div style="height:16px"></div>`;
 }
 
-function setBPBAnswer(key, value, btn) {
-  birthPlanAnswers[key] = value;
+function setBPBAnswer(key, value, btn, multi) {
+  if (multi) {
+    let arr = Array.isArray(birthPlanAnswers[key]) ? [...birthPlanAnswers[key]] : [];
+    const idx = arr.indexOf(value);
+    if (idx >= 0) arr.splice(idx, 1); else arr.push(value);
+    if (arr.length) birthPlanAnswers[key] = arr; else delete birthPlanAnswers[key];
+    btn.classList.toggle('selected', (birthPlanAnswers[key] || []).includes(value));
+  } else {
+    birthPlanAnswers[key] = value;
+    btn.closest('.bpb-question').querySelectorAll('.bpb-pill').forEach(p => p.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
   localStorage.setItem('birth-plan', JSON.stringify(birthPlanAnswers));
-  // update pills in that question
-  btn.closest('.bpb-question').querySelectorAll('.bpb-pill').forEach(p => p.classList.remove('selected'));
-  btn.classList.add('selected');
-  // refresh summary
   const wrap = document.getElementById('bpb-summary-wrap');
   if (wrap) wrap.innerHTML = renderBirthPlanSummary();
 }
 
 function renderBirthPlanSummary() {
-  const answered = BIRTH_PLAN_QUESTIONS.filter(q => birthPlanAnswers[q.key]);
+  const answered = BIRTH_PLAN_QUESTIONS.filter(q => {
+    const v = birthPlanAnswers[q.key];
+    return v && (!Array.isArray(v) || v.length);
+  });
   if (!answered.length) return '';
-  const rows = answered.map(q => `
+  const rows = answered.map(q => {
+    const v = birthPlanAnswers[q.key];
+    const display = Array.isArray(v) ? v.join(', ') : v;
+    return `
     <div class="bpo-row">
       <span class="bpo-q">${q.q}</span>
-      <span class="bpo-a">${birthPlanAnswers[q.key]}</span>
-    </div>`).join('');
+      <span class="bpo-a">${display}</span>
+    </div>`;
+  }).join('');
+  const savedNotes = localStorage.getItem('birth-plan-notes') || '';
   return `
     <div class="birth-plan-output">
       <div class="bpo-header">📋 My Birth Preferences (${answered.length}/${BIRTH_PLAN_QUESTIONS.length})</div>
       ${rows}
-      <div style="padding:12px 16px">
-        <button class="big-action-btn btn-teal" onclick="copyBirthPlan()">Copy to Share</button>
+      <div style="padding:12px 16px 4px;font-size:13px;font-weight:600;color:var(--ink-soft)">Additional notes / comments</div>
+      <div style="padding:0 16px 12px">
+        <textarea class="bp-notes-area" id="bp-notes"
+          placeholder="Any other preferences, concerns, or information for your care team…"
+          oninput="localStorage.setItem('birth-plan-notes', this.value)"
+          style="width:100%;min-height:80px;border:1.5px solid var(--rule);border-radius:var(--radius-sm);padding:10px 12px;font-family:var(--font-sans);font-size:14px;color:var(--ink);background:var(--bg);outline:none;resize:vertical;transition:border-color .2s;line-height:1.5;box-sizing:border-box"
+        >${savedNotes}</textarea>
+      </div>
+      <div style="padding:0 16px 16px;display:flex;gap:10px;flex-wrap:wrap">
+        <button class="big-action-btn btn-teal" onclick="copyBirthPlan()" style="flex:1">Copy to Share</button>
+        <button class="big-action-btn btn-navy" onclick="printBirthPlan()" style="flex:1">Print / PDF</button>
       </div>
     </div>`;
 }
@@ -1005,8 +1032,14 @@ function renderBirthPlanSummary() {
 function copyBirthPlan() {
   const lines = ['MY BIRTH PREFERENCES\n'];
   BIRTH_PLAN_QUESTIONS.forEach(q => {
-    if (birthPlanAnswers[q.key]) lines.push(`• ${q.q}: ${birthPlanAnswers[q.key]}`);
+    const v = birthPlanAnswers[q.key];
+    if (v && (!Array.isArray(v) || v.length)) {
+      lines.push(`• ${q.q}: ${Array.isArray(v) ? v.join(', ') : v}`);
+    }
   });
+  const notes = (document.getElementById('bp-notes') || {}).value
+    || localStorage.getItem('birth-plan-notes') || '';
+  if (notes.trim()) lines.push('\nAdditional notes:\n' + notes.trim());
   lines.push('\nGenerated with Pregnancy & Birth Guide');
   const text = lines.join('\n');
   if (navigator.clipboard) {
@@ -1014,6 +1047,32 @@ function copyBirthPlan() {
   } else {
     showToast('Copy not supported on this browser');
   }
+}
+
+function printBirthPlan() {
+  const pv = document.getElementById('print-view');
+  if (!pv) return;
+  const answered = BIRTH_PLAN_QUESTIONS.filter(q => {
+    const v = birthPlanAnswers[q.key];
+    return v && (!Array.isArray(v) || v.length);
+  });
+  const rows = answered.map(q => {
+    const v = birthPlanAnswers[q.key];
+    const display = Array.isArray(v) ? v.join(', ') : v;
+    return `<div class="pv-row"><span class="pv-q">${q.q}</span><span class="pv-a">${display}</span></div>`;
+  }).join('');
+  const notes = (document.getElementById('bp-notes') || {}).value
+    || localStorage.getItem('birth-plan-notes') || '';
+  const notesHtml = notes.trim()
+    ? `<div class="pv-notes"><strong>Additional notes:</strong><br>${notes.trim().replace(/\n/g, '<br>')}</div>`
+    : '';
+  pv.innerHTML = `
+    <h1>My Birth Preferences</h1>
+    <div class="pv-meta">Generated ${new Date().toLocaleDateString()}</div>
+    ${rows}
+    ${notesHtml}
+    <div class="pv-footer">Pregnancy &amp; Birth Guide · Evidence-based · Private &amp; offline</div>`;
+  window.print();
 }
 
 // ═══════════════════════════════════════════════════════
