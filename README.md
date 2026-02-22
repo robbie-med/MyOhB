@@ -1,79 +1,74 @@
 # Pregnancy & Birth Guide — PWA
 
-An evidence-based, fully offline-capable Progressive Web App (PWA) for pregnant patients. Covers prenatal visits, labor & delivery, postpartum recovery, newborn care, FAQ, and personal contact storage.
+An evidence-based, fully offline-capable Progressive Web App for pregnant patients. Covers prenatal visits, labor & delivery, postpartum recovery, newborn care, FAQ, and 10 interactive clinical tools — all stored privately on the patient's device.
 
 ## Features
 
-- ✅ **Works 100% offline** — Service worker caches everything after first load
-- ✅ **Installable to home screen** — iOS and Android
-- ✅ **Full-text search** across all content
-- ✅ **Tap-to-call and tap-to-text** saved care team contacts
-- ✅ **Persistent contact storage** — saved to the device, no server needed
-- ✅ **High school reading level** — plain language, evidence-based (ACOG guidelines)
-- ✅ **No ads, no tracking, no data collection**
+- **Works 100% offline** — service worker caches everything after first load
+- **Installable** — iOS and Android home screen
+- **10 interactive tools** — kick counter, contraction timer, feeding log, diaper log, jaundice tracker, blood pressure log, weight tracker, mood check-in (EPDS), birth plan builder, visit notes
+- **Dark mode** — respects system preference, user-toggleable
+- **Full-text search** across all content
+- **Data export** — download all your data as a JSON file
+- **Print-ready birth plan** — clean layout for printing or saving as PDF
+- **Tap-to-call / tap-to-text** saved care team contacts
+- **No ads, no tracking, no data collection** — everything stays on the device
 
-## Files
+## File Structure
 
 ```
-index.html      ← The entire app
-manifest.json   ← PWA metadata (name, icons, theme color)
-sw.js           ← Service worker (offline caching)
-README.md       ← This file
+index.html      HTML shell — all pages and modals, no inline JS or CSS
+styles.css      All styles, including tool UI and dark mode
+content.js      Guide content, navigation, search, My Info, PWA logic
+tools.js        All 10 interactive tools
+sw.js           Service worker (offline caching, cache-first strategy)
+manifest.json   PWA metadata (name, icons, theme color)
+README.md       This file
 ```
 
-## Deploy to GitHub Pages (3 minutes)
+To update content, edit `content.js` (the `CONTENT` object at the top).
+After any change, bump the cache version in `sw.js` (`CACHE_NAME = 'birth-guide-v3'` etc.) so users get the update.
 
-1. Create a new GitHub repository (can be public or private)
-2. Upload these three files: `index.html`, `manifest.json`, `sw.js`
-3. In the repo, go to **Settings → Pages**
-4. Under **Source**, select **Deploy from a branch**, choose `main`, folder `/ (root)`
-5. Click **Save**
-6. Your app will be live at `https://YOUR-USERNAME.github.io/YOUR-REPO-NAME/`
+## Deploy to GitHub Pages
 
-That's it. Share the URL with your patients.
+1. Push all files to a GitHub repository
+2. Go to **Settings → Pages**
+3. Source: **Deploy from a branch**, branch `main`, folder `/ (root)`
+4. Save — live in ~2 minutes at `https://YOUR-USERNAME.github.io/YOUR-REPO/`
 
-## iOS Install Instructions (for patients)
+## iOS Install (share with patients)
 
-1. Open the link in **Safari** (must be Safari on iPhone)
-2. Tap the **Share** button (box with arrow)
-3. Scroll down and tap **Add to Home Screen**
-4. Tap **Add**
+1. Open the link in **Safari**
+2. Tap the Share button → **Add to Home Screen**
+3. Tap **Add**
 
-The app will now appear on the home screen and work completely offline.
+## Android Install
 
-## Android Install Instructions (for patients)
+1. Open in **Chrome**
+2. Tap ⋮ → **Add to Home Screen** or **Install App**
 
-1. Open the link in **Chrome**
-2. Tap the three-dot menu (⋮)
-3. Tap **Add to Home Screen** or **Install App**
-4. Tap **Install**
+## Interactive Tools
 
-## Updating Content
-
-All content is inside `index.html` in the `CONTENT` JavaScript object (around line 400). Each topic has:
-- `id` — unique identifier
-- `title` — displayed in the card header
-- `sub` — subtitle
-- `body` — HTML content of the accordion panel
-
-After editing, increment the cache version in `sw.js` (`const CACHE_NAME = 'birth-guide-v2'`) so patients get the updated version.
-
-## Customization Ideas
-
-- Add your practice name and logo to the header
-- Add a "Prepared by [Your Practice]" footer
-- Pre-fill your office phone number in the My Info section
-- Add a link to your patient portal
-- Translate to Spanish (the content structure makes this straightforward)
+| Tool | Purpose |
+|---|---|
+| Kick Counter | Sessions, 10-in-2-hour goal, history |
+| Contraction Timer | 5-1-1 detection, "time to go in" alert |
+| Feeding Log | Breast/bottle, 24-hr count, flags <8/day |
+| Diaper Log | Wet and dirty counts by day |
+| Jaundice Tracker | Birth-date-based day-by-day guidance |
+| Blood Pressure Log | Flags ≥140/90, color-coded history |
+| Weight Tracker | IOM guidelines by pre-pregnancy BMI |
+| Mood Check-In | Edinburgh Postnatal Depression Scale (EPDS) |
+| Birth Plan Builder | Guided choices, multi-select, notes, copy/print |
+| Visit Notes | Pre-visit questions and post-visit notes |
 
 ## Evidence Base
 
-Content is based on:
-- ACOG (American College of Obstetricians and Gynecologists) clinical guidance
-- AAP (American Academy of Pediatrics) safe sleep and newborn care guidelines
-- WHO delayed cord clamping and first bath recommendations
-- Published evidence on epidurals, VBAC, and induction of labor
+- ACOG clinical guidance (prenatal care, labor, postpartum)
+- AAP safe sleep and newborn care guidelines
+- WHO recommendations (delayed cord clamping, first bath timing)
+- Published evidence on epidurals, VBAC, and labor induction
 
 ---
 
-*This app provides general health education. It is not a substitute for individualized medical advice from a licensed provider.*
+*This app provides general health education and is not a substitute for individualized medical advice.*
