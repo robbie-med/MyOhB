@@ -932,7 +932,7 @@ const BIRTH_PLAN_QUESTIONS = [
   { key: 'delayed-cord', q: 'Delayed cord clamping (30–60 sec)', opts: ['Yes please', 'No preference', 'Discuss with team'] },
   { key: 'skin-to-skin', q: 'Immediate skin-to-skin after birth', opts: ['Yes — top priority', 'Yes if possible', 'No preference'] },
   { key: 'pushing', q: 'Pushing position', opts: ['Guided by nurse', 'Want to try different positions', 'Squatting/standing'] },
-  { key: 'episiotomy', q: 'Episiotomy', opts: ['Avoid unless necessary', 'Trust the team's judgment', 'No preference'] },
+  { key: 'episiotomy', q: 'Episiotomy', opts: ['Avoid unless necessary', "Trust the team\u2019s judgment", 'No preference'] },
   { key: 'cord-cut', q: 'Who cuts the cord', opts: ['Support person', 'Care team', 'No preference'] },
   { key: 'photos', q: 'Photography during delivery', opts: ['Yes please', 'No photos during delivery', 'Photos after delivery only'] },
   { key: 'visitors', q: 'Visitors during labor', opts: ['Support person only', 'Close family welcome', 'No visitors'] },
